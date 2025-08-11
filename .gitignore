@@ -25,3 +25,5 @@ dist/
 .vscode/
 .idea/
 *.swp
+
+push.txt
