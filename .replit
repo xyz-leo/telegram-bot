@@ -1,0 +1,14 @@
+modules = ["python-3.11"]
+[nix]
+channel = "stable-25_05"
+
+[workflows]
+
+[[workflows.workflow]]
+name = "run"
+mode = "sequential"
+author = 46295607
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 bot.py"
