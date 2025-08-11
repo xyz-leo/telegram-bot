@@ -37,7 +37,7 @@ async def news(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
         categories_str = ", ".join(VALID_TOPICS)
         await update.message.reply_text(
-            f"You can ask for news categories with /news command. Valid categories are:\n{categories_str}.\n\n"
+            f"You can ask for news categories with /news <category> command. Example: /news music\n\nValid categories are:\n{categories_str}.\n\n"
             "You can also ask for specific topics, like 'linux' or 'bitcoin'."
         )
         return
