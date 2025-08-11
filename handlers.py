@@ -1,6 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from utils import get_weather, get_news
+from utils import get_weather, get_news, get_help
 
 
 #--- Start command ---
@@ -13,14 +13,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # --- Help command ---
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    help_text = (
-        "Available commands:\n"
-        "/start - Start the bot and show this help message\n"
-        "/weather <city> - Get current weather for a city\n"
-        "/news <topic> - Get the current news for a topic or category\n"
-        "/help - Show this help message\n"
-        #... add more commands as needed
-    )
+    help_text = get_help()
     await update.message.reply_text(help_text)
 
 
@@ -44,7 +37,7 @@ async def news(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
         categories_str = ", ".join(VALID_TOPICS)
         await update.message.reply_text(
-            f"You can ask for news categories with /news command. Valid categories are:\n{categories_str}.\n"
+            f"You can ask for news categories with /news command. Valid categories are:\n{categories_str}.\n\n"
             "You can also ask for specific topics, like 'linux' or 'bitcoin'."
         )
         return
