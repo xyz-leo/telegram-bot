@@ -8,6 +8,7 @@ def register_handlers(app):
     app.add_handler(CommandHandler("help", handlers.help_command))
     app.add_handler(CommandHandler("weather", handlers.weather))
     app.add_handler(CommandHandler("news", handlers.news))
+    app.add_handler(CommandHandler("schedule", handlers.schedule))
 
 
 # --- Main loop ---

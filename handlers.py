@@ -1,6 +1,8 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from utils import get_weather, get_news, get_help
+import scheduler # for scheduling tasks
+import re # for regular expressions, using in the schedule handler
 
 
 #--- Start command ---
@@ -54,3 +56,42 @@ async def news(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text("\n\n".join(messages))
 
+
+# --- Schedule tasks ---
+async def schedule(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if len(context.args) < 2:
+        await update.message.reply_text(
+            "Usage:\n"
+            "/schedule <HH:MM> <message>\n"
+            "or\n"
+            "/schedule <HH:MM> /<handler> [handler_param]\n\n"
+            "Example:\n"
+            "/schedule 12:00 Hello there!\n"
+            "/schedule 15:00 /weather São Paulo"
+        )
+        return
+
+    time_str = context.args[0]
+
+    if not re.match(r"^\d{2}:\d{2}$", time_str):
+        await update.message.reply_text("Time format invalid. Use HH:MM 24-hour format.")
+        return
+
+    # If the second arg starts with '/', it is a handeler
+    if context.args[1].startswith("/"):
+        handler_name = context.args[1][1:]  # remove o "/"
+        handler_param = " ".join(context.args[2:]) if len(context.args) > 2 else ""
+        job_data = {
+            "handler": handler_name,
+            "param": handler_param
+        }
+    else:
+        # Simple message (without handler)
+        job_data = {
+            "handler": None,
+            "message": " ".join(context.args[1:])
+        }
+
+    scheduler.schedule_message_job(context.job_queue, update.effective_chat.id, time_str, job_data)
+
+    await update.message.reply_text(f"Scheduled your task/message at {time_str}.")

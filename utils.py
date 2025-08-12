@@ -1,5 +1,5 @@
-import requests
-from config import OPENWEATHER_API_KEY, NEWSAPI_KEY
+import requests # for making HTTP requests
+from config import OPENWEATHER_API_KEY, NEWSAPI_KEY # for accessing API keys
 
 
 def get_help():
@@ -8,6 +8,7 @@ def get_help():
         "• /start - Start the bot and show this help message\n\n"
         "• /weather <city> - Get current weather for a city\n\n"
         "• /news <topic> - Get the current news for a topic or category\n\n"
+        "• /schedule <HH:MM> <message> - Schedule a message to be sent at a specific time\n\n"
         "• /help - Show this help message\n"
         #... add more commands as needed
     )
