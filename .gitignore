@@ -26,4 +26,6 @@ dist/
 .idea/
 *.swp
 
+# Project related
 push.txt
+reminders.json
