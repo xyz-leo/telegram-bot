@@ -20,7 +20,7 @@ MESSAGES = {
       "welcome": "👋 Olá, seja bem-vindo, {user}!\n\nVocê pode digitar /help para consultar os comandos disponíveis.",
 
       # language change message
-      "lang_change": "Idioma definido para português brasileiro, {lang}-br",
+      "lang_change": "Idioma definido para português brasileiro, {lang}-BR",
       "lang_help": "Digite /language <pt|en>, exemplo: /config pt",
 
       # Weather message
@@ -52,7 +52,7 @@ MESSAGES = {
       "welcome": "👋 Hello, welcome, {user}!\n\nYou can type /help to check avaiable commands.",
 
       # language change message
-      "lang_change": "Language set to American English, {lang}-us",
+      "lang_change": "Language set to American English, {lang}-US",
       "lang_help": "Type /language <pt|en>, example: /config en",
 
       # Weather message
@@ -66,5 +66,5 @@ MESSAGES = {
 }
 
 def bot_send_message(user_lang, key):
-  """Retorna mensagem no idioma do usuário, ou fallback para inglês."""
-  return MESSAGES.get(user_lang, MESSAGES["en"]).get(key, key)
+  """Returns message in the user language, or portuguese fallback"""
+  return MESSAGES.get(user_lang, MESSAGES["pt"]).get(key, key)
