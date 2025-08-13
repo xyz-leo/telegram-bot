@@ -33,7 +33,16 @@ When using the reminders, do not schedule anything sensitive, as this bot does n
 - The bot uses a handler dictionary internally to map handler names to functions.
 - Handlers internally use utility functions (`get_weather`, `get_news`) to retrieve data from third-party APIs.
 
-### 3. Commands
+### 3. Language support
+
+This bot supports both English and Brazilian Portuguese (pt-BR).
+Users can switch between languages, and all bot messages, including responses from commands like /weather and /news, will be displayed in the selected language.
+
+The language system is implemented using message templates with placeholders, allowing dynamic content (e.g., city names, temperatures) to be correctly formatted in either language.
+
+Users language preferences are saved persistently in a JSON file, so the bot remembers the chosen language for future interactions.
+
+### 4. Commands
 
 - `/start` - Welcomes the user and displays available commands.
 - `/help` - Shows help information listing available commands.
@@ -44,15 +53,6 @@ When using the reminders, do not schedule anything sensitive, as this bot does n
 - `/reminder <HH:MM> /handler <param>` - Schedule a reminder that triggers a handler with optional parameters.
 - `/lsreminders` - Lists all active reminders for the user.
 - `/rmreminder <schedule_id>` - Removes a scheduled reminder by its ID.
-
-### 4. Language support
-
-This bot supports both English and Brazilian Portuguese (pt-BR).
-Users can switch between languages, and all bot messages, including responses from commands like /weather and /news, will be displayed in the selected language.
-
-The language system is implemented using message templates with placeholders, allowing dynamic content (e.g., city names, temperatures) to be correctly formatted in either language.
-
-Users language preferences are saved persistently in a JSON file, so the bot remembers the chosen language for future interactions.
 
 ---
 

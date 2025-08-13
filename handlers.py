@@ -8,14 +8,14 @@ from messages import bot_send_message
 from user_pref import get_lang, set_lang
 
 
-#--- Start command ---
+# ====================== Start command ======================
 async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = get_lang(update.effective_user.id)
     user = update.effective_user.first_name
     await update.message.reply_text(bot_send_message(lang, "welcome").format(user=user))
 
 
-# --- Help command ---
+# ====================== Help command ======================
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = get_lang(update.effective_user.id)
     user = update.effective_user.first_name
@@ -33,7 +33,7 @@ async def language_cmd(update, context):
         await update.message.reply_text(bot_send_message(lang, "lang_help"))
 
 
-# --- Get the current weather ---
+# ====================== Get the current weather ======================
 async def weather_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = get_lang(update.effective_user.id)
     # If user provides city name as arguments, fetch weather for that city
@@ -49,7 +49,7 @@ async def weather_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(weather_report)
 
 
-# --- Get the news ---
+# ====================== Get the news ======================
 VALID_TOPICS = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
 
 async def news_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -78,7 +78,7 @@ async def news_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("\n\n".join(messages))
 
 
-# --- Schedule Reminders  ---
+# ====================== Schedule Reminders  ======================
 # Command: /schedule <HH:MM> <message> OR /schedule <HH:MM> <handler> <param>
 async def reminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -88,21 +88,17 @@ async def reminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
       OR
       /reminder <HH:MM> /handler param...
     """
+    
+    lang = get_lang(update.effective_user.id)
     # Validate that user sent at least a time and one argument
     if len(context.args) < 2:
-        await update.message.reply_text(
-            "Usage:\n"
-            "/reminder <HH:MM> <message>\n"
-            "OR\n"
-            "/reminder <HH:MM> /handler <param>\n"
-            "Example: /reminder 12:00 /weather Sao Paulo"
-        )
+        await update.message.reply_text(bot_send_message(lang, "reminder_usage"))
         return
 
     time_str = context.args[0]
     # Validate time format with regex: HH:MM 24-hour
     if not re.match(r"^\d{2}:\d{2}$", time_str):
-        await update.message.reply_text("Invalid time format. Use HH:MM 24-hour format.")
+        await update.message.reply_text(bot_send_message(lang, "reminder_invalid_time"))
         return
 
     # Generate a unique ID for the scheduled reminder job
@@ -143,38 +139,40 @@ async def reminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         **job_data
     })
 
-    await update.message.reply_text(f"Reminder scheduled at {time_str}. Your job ID: {schedule_id}")
+    await update.message.reply_text(bot_send_message(lang, "reminder_scheduled").format(time=time_str, schedule_id=schedule_id))
 
 
 async def lsreminders_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    lang = get_lang(update.effective_user.id)
     chat_id = str(update.effective_chat.id)
     # Load all schedules for this chat/user
     schedules = load_schedules().get(chat_id, [])
 
     if not schedules:
-        await update.message.reply_text("You have no reminders.")
+        await update.message.reply_text(bot_send_message(lang, "no_reminders"))
         return
 
     # Build a message listing all reminders for the user, formatting per type
-    msg_lines = ["Your scheduled tasks:"]
+    msg_lines = [bot_send_message(lang, "lsreminders")]
     for sched in schedules:
         sched_id = sched.get("id")
         time = sched.get("time")
         if sched.get("type") == "handler":
             handler = sched.get("handler")
             param = sched.get("param", "")
-            msg_lines.append(f"- ID: {sched_id}\n  Time: {time}\n  Handler: {handler} {param}")
+            msg_lines.append(bot_send_message(lang, "lsreminders_handler").format(sched_id=sched_id, time=time, handler=handler, param=param))
         else:
             message = sched.get("message")
-            msg_lines.append(f"- ID: {sched_id}\n  Time: {time}\n  Message: {message}")
+            msg_lines.append(bot_send_message(lang, "lsreminders_message").format(sched_id=sched_id, time=time, message=message))
 
     await update.message.reply_text("\n\n".join(msg_lines))
 
 
 async def rmreminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    lang = get_lang(update.effective_user.id)
     chat_id = str(update.effective_chat.id)
     if not context.args:
-        await update.message.reply_text("Usage: /remove <schedule_id>")
+        await update.message.reply_text(bot_send_message(lang, "rmreminder_usage"))
         return
 
     schedule_id = context.args[0]
@@ -182,7 +180,7 @@ async def rmreminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Verify the schedule ID exists before removing
     if not any(s.get("id") == schedule_id for s in schedules):
-        await update.message.reply_text(f"No reminder found with ID {schedule_id}.")
+        await update.message.reply_text(bot_send_message(lang, "rmreminder_not_found").format(schedule_id=schedule_id))
         return
 
     # Remove schedule from persistent JSON storage
@@ -194,4 +192,4 @@ async def rmreminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for job in current_jobs:
         job.schedule_removal()
 
-    await update.message.reply_text(f"Reminder with ID {schedule_id} removed.")
+    await update.message.reply_text(bot_send_message(lang, "rmreminder_removed").format(schedule_id=schedule_id))

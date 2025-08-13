@@ -12,11 +12,11 @@ else:
     USER_PREFS = {}
 
 def get_lang(user_id):
-    """Retorna idioma do usuário, ou inglês como padrão."""
-    return USER_PREFS.get(str(user_id), {}).get("lang", "en")
+    """Return the user language, or english as default"""
+    return USER_PREFS.get(str(user_id), {}).get("lang", "pt")
 
 def set_lang(user_id, lang):
-    """Define idioma do usuário e salva em disco."""
+    """Define the user language and saves in disk (user_prefs.json)"""
     USER_PREFS[str(user_id)] = {"lang": lang}
     with open(PREFS_FILE, "w", encoding="utf-8") as f:
         json.dump(USER_PREFS, f, ensure_ascii=False, indent=2)
