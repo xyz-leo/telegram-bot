@@ -3,41 +3,26 @@ from config import OPENWEATHER_API_KEY, NEWSAPI_KEY # for accessing API keys
 import json
 import os
 from reminder import schedule_message_job
+from messages import bot_send_message
 
 
-def get_help():
-    help_text = (
-        "Available commands:\n\n"
-        "• /st or /start - Start the bot and show this help message\n\n"
-        "• /wt or /weather <city> - Get current weather for a city\n\n"
-        "• /nw or /news <topic> - Get the current news for a topic or category\n\n"
-        "• /re or /reminder <HH:MM> <message> - Schedule a message to be sent at a specific time, everyday\n\n"
-        "• /lsre or /lsreminders - List all scheduled reminders\n\n"
-        "• /rmre or /rmreminder <schedule_id> - Remove a scheduled reminder\n\n"
-        "• /hp or /help - Show this help message\n"
-        #... add more commands as needed
-    )
-    return help_text
-
-
-def get_weather(city: str) -> str:
+def get_weather(city: str, lang: str) -> str:
     try:
         base_url = "https://api.openweathermap.org/data/2.5/weather"
         params = {
             "q": city,
             "appid": OPENWEATHER_API_KEY,
             "units": "metric",  # Celsius
-            "lang": "en",  # English language for weather description"
+            "lang": lang,  # English language for weather description"
         }
         response = requests.get(base_url, params=params, timeout=10)
         if response.status_code == 200:
             data = response.json()
             description = data["weather"][0]["description"]
             temp = data["main"]["temp"]
-            return f"The weather in {city} is '{description}' with temperature of {temp}°C."
+            return bot_send_message(lang, "weather").format(city=city, description=description, temp=temp)
         else:
-            return f"Could not obtain the weather for the specified city. '{city}'"
-            
+            return bot_send_message(lang, "weather_error").format(city=city)         
     except requests.RequestException as e:
         return f"Error connecting to weather service: {e}"
     except Exception as e:

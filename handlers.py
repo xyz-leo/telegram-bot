@@ -1,37 +1,51 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from utils import get_weather, get_news, get_help, add_schedule, remove_schedule, load_schedules
+from utils import get_weather, get_news, add_schedule, remove_schedule, load_schedules
 import reminder # for scheduling tasks
 import re
 import uuid
+from messages import bot_send_message
+from user_pref import get_lang, set_lang
 
 
 #--- Start command ---
 async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    welcome_text = "Welcome! Here's what I can do for you:\n"
-    await update.message.reply_text(welcome_text)
-    # Calls the helper handler to show avaiable commands
-    await help_cmd(update, context)
+    lang = get_lang(update.effective_user.id)
+    user = update.effective_user.first_name
+    await update.message.reply_text(bot_send_message(lang, "welcome").format(user=user))
 
 
 # --- Help command ---
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    help_text = get_help()
-    await update.message.reply_text(help_text)
+    lang = get_lang(update.effective_user.id)
+    user = update.effective_user.first_name
+    await update.message.reply_text(bot_send_message(lang, "help_text").format(user=user))
+
+
+async def language_cmd(update, context):
+    # Example: /language pt
+    if context.args:
+        lang = context.args[0].lower()
+        set_lang(update.effective_user.id, lang)
+        await update.message.reply_text(bot_send_message(lang, "lang_change").format(lang=lang))
+    else:
+        lang = get_lang(update.effective_user.id)
+        await update.message.reply_text(bot_send_message(lang, "lang_help"))
 
 
 # --- Get the current weather ---
 async def weather_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    lang = get_lang(update.effective_user.id)
     # If user provides city name as arguments, fetch weather for that city
     if context.args:
         city = " ".join(context.args)
-        weather_report = get_weather(city)
+        weather_report = get_weather(city, lang)
         await update.message.reply_text(weather_report)
     else:
         # Default city if none provided
         city = "São Paulo"
-        weather_report = get_weather(city)
-        await update.message.reply_text("City not provided. Using 'São Paulo' as standard.")
+        weather_report = get_weather(city, lang)
+        await update.message.reply_text(bot_send_message(lang, "weather_not_city"))
         await update.message.reply_text(weather_report)
 
 
