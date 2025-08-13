@@ -192,4 +192,4 @@ async def rmreminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for job in current_jobs:
         job.schedule_removal()
 
-    await update.message.reply_text(bot_send_message(lang, "rmreminder_removed").format(schedule_id=schedule_id))
+    await update.message.reply_text(bot_send_message(lang, "rmreminder_removed"))
