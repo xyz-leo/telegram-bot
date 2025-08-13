@@ -35,7 +35,7 @@ MESSAGES = {
       # ====================== Reminders  ======================
       "reminder_usage": "Uso:\n/reminder <HH:MM> <message>\nOU\n/reminder <HH:MM> /handler <param>\nExemplo: /reminder 12:00 /weather Sao Paulo",
       "reminder_invalid_time": "Formato de hora inválido. Use o formato HH:MM 24 horas.",
-      "reminder_scheduled": "Lembrete agendado às {time}. Seu ID de trabalho: {schedule_id}",
+      "reminder_scheduled": "Lembrete agendado às {time}. ID deste lembrete: {schedule_id}",
       
       # List reminders
       "no_reminders": "Você não tem lembretes.",
@@ -87,7 +87,7 @@ MESSAGES = {
       # ====================== Reminders  ======================
       "reminder_usage": "Usage:\n/reminder <HH:MM> <message>\nOR\n/reminder <HH:MM> /handler <param>. Example: /reminder 12:00 /weather Sao Paulo",
       "reminder_invalid_time": "Invalid time format. Use HH:MM 24-hour format.",
-      "reminder_scheduled": "Reminder scheduled at {time}. Your job ID: {schedule_id}",
+      "reminder_scheduled": "Reminder scheduled at {time}. This reminder ID: {schedule_id}",
 
       # List reminders
       "no_reminders": "You have no reminders.",

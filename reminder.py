@@ -1,11 +1,12 @@
 import datetime
 from telegram.ext import ContextTypes
-
+from user_pref import get_lang
 
 async def scheduled_message(context: ContextTypes.DEFAULT_TYPE):
     # Extract the chat ID and job data from the context passed by the job queue
     chat_id = context.job.chat_id
     data = context.job.data
+    lang = get_lang(chat_id)
 
     # Check if the scheduled job is a handler type (e.g., weather or news fetch)
     if data.get("type") == "handler":
@@ -17,7 +18,7 @@ async def scheduled_message(context: ContextTypes.DEFAULT_TYPE):
         if handler_name in ("weather", 'wt'):
             from utils import get_weather
             # Use provided parameter as city or default to "São Paulo"
-            text = get_weather(param or "São Paulo")
+            text = get_weather(param or "São Paulo", lang)
 
         # Handle news requests similarly, with validation against known topics
         elif handler_name in ('news', 'nw'):
