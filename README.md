@@ -12,6 +12,10 @@ When using the reminders, do not schedule anything sensitive, as this bot does n
 
 ---
 
+## Screenshot
+
+![telegram-bot](https://github.com/user-attachments/assets/64941f6e-24f5-4b7b-8c2a-650cd1831e54)
+
 ## Features
 
 ### 1. Scheduling Reminders
