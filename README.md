@@ -4,11 +4,13 @@
 
 This project is a Telegram bot implemented using the `python-telegram-bot` library. The bot allows users to schedule reminders that send messages or trigger predefined commands (handlers) at specified times daily. It supports multiple users, storing scheduled tasks persistently in a JSON file, and reloading them automatically when the bot restarts.
 
-The bot also includes commands for getting weather information and news updates, which can be scheduled as reminders.
+The bot also includes commands for getting weather information and other stuff, which can be scheduled as reminders.
 
 ## IMPORTANT
 
 When using the reminders, do not schedule anything sensitive, as this bot does not implement any cryptography or encryption for stored data or messages.
+
+I also removed all News API integrations as most are paid; kept only during development for learning purposes. Check previous commits to see the original implementation.
 
 ---
 
@@ -21,7 +23,7 @@ When using the reminders, do not schedule anything sensitive, as this bot does n
 ### 1. Scheduling Reminders
 
 - Users can schedule reminders using the `/reminder` command.
-- Reminders can be simple text messages or calls to predefined handlers such as weather or news.
+- Reminders can be simple text messages or calls to predefined handlers such as weather or other stuff.
 - The scheduled reminders repeat daily at the specified time.
 - Scheduled tasks are stored persistently in a JSON file (`reminders.json`) under each user's chat ID.
 - On bot startup, all reminders are loaded from the JSON and scheduled automatically.
@@ -32,27 +34,43 @@ When using the reminders, do not schedule anything sensitive, as this bot does n
 
 - The bot supports running handlers as scheduled jobs. Examples include:
   - `/weather <city>`: Fetches current weather information for the specified city (default: São Paulo).
-  - `/news <topic>`: Fetches news articles by category or search query.
 - Handlers are invoked automatically when a scheduled reminder with a handler type is triggered.
 - The bot uses a handler dictionary internally to map handler names to functions.
-- Handlers internally use utility functions (`get_weather`, `get_news`) to retrieve data from third-party APIs.
+- Handlers internally use utility functions (`get_weather`) to retrieve data from third-party APIs.
 
-### 3. Language support
+
+### 3. Interactive Menu
+
+The bot uses interactive inline keyboards for navigation.
+From the main menu, users can access:
+
+🌤 Weather – Opens a submenu to choose a state or city and view current weather information.
+
+📰 News – (Removed in current version) Previously opened a submenu with categories such as General, Technology, Sports and many others.
+
+📅 List Reminders – Displays a list of saved reminders.
+
+💬 Switch Language – Changes the interface language.
+
+❓ Help – Shows usage instructions.
+
+Each submenu returns specific callback data to the button_handler function, which processes the user's selection and responds accordingly.
+
+### 4. Language Support
 
 This bot supports both English and Brazilian Portuguese (pt-BR).
-Users can switch between languages, and all bot messages, including responses from commands like /weather and /news, will be displayed in the selected language.
+Users can switch between languages, and all bot messages, including responses from commands like /weather, will be displayed in the selected language.
 
 The language system is implemented using message templates with placeholders, allowing dynamic content (e.g., city names, temperatures) to be correctly formatted in either language.
 
 Users language preferences are saved persistently in a JSON file, so the bot remembers the chosen language for future interactions.
 
-### 4. Commands
+### 5. Commands
 
 - `/start` - Welcomes the user and displays available commands.
 - `/help` - Shows help information listing available commands.
 - `/language <lang>` - Switch between english and portuguese.
 - `/weather <city>` - Fetches weather information for a given city.
-- `/news <topic>` - Fetches news by category or keyword.
 - `/reminder <HH:MM> <message>` - Schedule a simple message reminder at a specified 24-hour time.
 - `/reminder <HH:MM> /handler <param>` - Schedule a reminder that triggers a handler with optional parameters.
 - `/lsreminders` - Lists all active reminders for the user.
