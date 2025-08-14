@@ -1,6 +1,6 @@
 from telegram import Update 
 from telegram.ext import ContextTypes
-from utils import send_kbd_menu, get_target_message, get_weather, get_news, add_schedule, remove_schedule, load_schedules
+from utils import send_kbd_menu, get_target_message, get_weather, add_schedule, remove_schedule, load_schedules
 import reminder # for scheduling tasks
 import re # for regular expressions, used to validate time format
 import uuid # for generating unique IDs
@@ -23,7 +23,6 @@ async def main_kbd_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     options = [
         (bot_send_message(lang, "option_weather"), "weather"),
-        (bot_send_message(lang, "option_news"), "news"),
         (bot_send_message(lang, "option_list_reminders"), "lsreminders"),
         (bot_send_message(lang, "option_switch_language"), "language"),
         (bot_send_message(lang, "option_help"), "help"),
@@ -48,19 +47,6 @@ async def weather_kbd_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await send_kbd_menu(update, context, options, "weather_menu")
 
 
-async def news_kbd_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    options = [
-        ("General", "news|General"),
-        ("Technology", "news|Technology"),
-        ("Sports", "news|Sports"),
-        ("Business", "news|Business"),
-        ("Entertainment", "news|Entertainment"),
-        ("Health", "news|Health"),
-        ("Science", "news|Science"),
-    ]
-    await send_kbd_menu(update, context, options, "news_menu")
-
-
 # Logic to handle button presses by the user
 async def button_handler(update, context):
     # Handle button presses
@@ -75,16 +61,10 @@ async def button_handler(update, context):
     if data.startswith("weather|"):
         city = data.split("|")[1]
         await query.message.reply_text(get_weather(city, lang))
-
-    if data.startswith("news|"):
-        topic = data.split("|")[1]
-        await query.message.reply_text(get_news(topic))
         
     # Handle the button press based on the callback data
     if data == "weather":
         await weather_kbd_menu(update, context)
-    elif data == "news":
-        await news_kbd_menu(update, context)
     elif data == "lsreminders":
         await lsreminders_cmd(update, context)
     elif data == "language":
@@ -139,35 +119,6 @@ async def weather_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         weather_report = get_weather(city, lang)
         await update.message.reply_text(bot_send_message(lang, "weather_not_city"))
         await update.message.reply_text(weather_report)
-
-
-# ====================== Get the news ======================
-VALID_TOPICS = ["business", "entertainment", "general", "health", "science", "sports", "technology", "crime", "education", "politics", "music"]
-
-async def news_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # If no arguments given, explain valid categories and usage
-    if not context.args:
-        categories_str = ", ".join(VALID_TOPICS)
-        await update.message.reply_text(
-            f"You can ask for news categories with /news <category> command. Example: /news music\n\n"
-            f"Valid categories are:\n{categories_str}.\n\n"
-            "You can also ask for specific topics, like 'linux' or 'bitcoin'."
-        )
-        return
-
-    messages = []
-    # Process each argument: if it's a valid category, fetch news by category; otherwise, search by query
-    for arg in context.args:
-        topic = arg.lower()
-        if topic in VALID_TOPICS:
-            news_text = get_news(category=topic)
-            messages.append(f"News for *{topic}*:\n{news_text}")
-        else:
-            news_text = get_news(query=topic)
-            messages.append(f"News about *{topic}*:\n{news_text}")
-
-    # Reply with all news messages concatenated
-    await update.message.reply_text("\n\n".join(messages))
 
 
 # ====================== Schedule Reminders  ======================
@@ -241,7 +192,8 @@ async def lsreminders_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     schedules = load_schedules().get(chat_id, [])
 
     if not schedules:
-        await update.message.reply_text(bot_send_message(lang, "no_reminders"))
+        target = await get_target_message(update, context)
+        await target.reply_text(bot_send_message(lang, "no_reminders"))
         return
 
     # Build a message listing all reminders for the user, formatting per type

@@ -1,6 +1,6 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup # for creating inline keyboards
 import requests # for making HTTP requests
-from config import OPENWEATHER_API_KEY, NEWSAPI_KEY # for accessing API keys
+from config import OPENWEATHER_API_KEY # for accessing API keys
 import json
 import os
 from reminder import schedule_message_job
@@ -59,48 +59,6 @@ def get_weather(city: str, lang: str) -> str:
             return bot_send_message(lang, "weather").format(city=city, description=description, temp=temp)
         else:
             return bot_send_message(lang, "weather_error").format(city=city)         
-    except requests.RequestException as e:
-        return f"Error connecting to weather service: {e}"
-    except Exception as e:
-        return f"Unexpected error: {e}"
-
-
-def get_news(category=None, query=None):
-    try:
-        if query:  # if query exists, use the 'everything' endpoint
-            url = "https://newsapi.org/v2/everything"
-            params = {
-                "apiKey": NEWSAPI_KEY,
-                "q": query,
-                "language": "en",
-                "pageSize": 10
-            }
-        else:  # else, find by category in top-headlines
-            url = "https://newsapi.org/v2/top-headlines"
-            params = {
-                "apiKey": NEWSAPI_KEY,
-                "category": category or "general",
-                "language": "en",
-                "country": "us",
-                "pageSize": 10
-            }
-    
-        response = requests.get(url, params=params, timeout=10)
-        
-        if response.status_code == 200:
-            data = response.json()
-            articles = data.get("articles", [])
-            if not articles:
-                return "No news found for this topic."
-            messages = []
-            for art in articles:
-                title = art.get("title")
-                url = art.get("url")
-                messages.append(f"• {title}\nRead more: {url}")
-            return "\n\n".join(messages)
-        else:
-            return "Failed to fetch news."
-    
     except requests.RequestException as e:
         return f"Error connecting to weather service: {e}"
     except Exception as e:

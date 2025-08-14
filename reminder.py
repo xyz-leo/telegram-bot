@@ -20,17 +20,6 @@ async def scheduled_message(context: ContextTypes.DEFAULT_TYPE):
             # Use provided parameter as city or default to "São Paulo"
             text = get_weather(param or "São Paulo", lang)
 
-        # Handle news requests similarly, with validation against known topics
-        elif handler_name in ('news', 'nw'):
-            from utils import get_news
-            from handlers import VALID_TOPICS
-
-            # If param matches a valid topic, get news by category, else use as query string
-            if param in VALID_TOPICS:
-                text = get_news(category=param)
-            else:
-                text = get_news(query=param)
-
         # Unknown handler fallback
         else:
             text = f"Unknown handler '{handler_name}'"

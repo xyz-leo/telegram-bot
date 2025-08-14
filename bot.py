@@ -12,7 +12,6 @@ def register_handlers(app):
         (["help", "hp"], handlers.help_cmd),
         (["language", "lg"], handlers.language_cmd),
         (["weather", "wt"], handlers.weather_cmd),
-        (["news", "nw"], handlers.news_cmd),
         (["reminder", "re"], handlers.reminder_cmd),
         (["lsreminders", "lsre"], handlers.lsreminders_cmd),
         (["rmreminder", "rmre"], handlers.rmreminder_cmd),
