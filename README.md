@@ -14,7 +14,7 @@ When using the reminders, do not schedule anything sensitive, as this bot does n
 
 ## Screenshot
 
-![telegram-bot](https://github.com/user-attachments/assets/64941f6e-24f5-4b7b-8c2a-650cd1831e54)
+![telegram-bot](https://github.com/user-attachments/assets/43970a17-a297-4eb9-ae5b-e0f050c973f1)
 
 ## Features
 
