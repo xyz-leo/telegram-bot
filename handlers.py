@@ -1,6 +1,6 @@
-from telegram import Update
+from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from utils import get_weather, get_news, add_schedule, remove_schedule, load_schedules
+from utils import get_target_message, get_weather, get_news, add_schedule, remove_schedule, load_schedules
 import reminder # for scheduling tasks
 import re
 import uuid
@@ -13,24 +13,82 @@ async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = get_lang(update.effective_user.id)
     user = update.effective_user.first_name
     await update.message.reply_text(bot_send_message(lang, "welcome").format(user=user))
+    await kbd_options_cmd(update=update, context=context)
+
+
+# ====================== Keyboard options ======================
+async def kbd_options_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    lang = get_lang(update.effective_user.id)
+    
+    # Create a keyboard with inline buttons
+    keyboard = [
+        [InlineKeyboardButton("🌤 Weather", callback_data="weather")],
+        [InlineKeyboardButton("📰 News", callback_data="news")],
+        [InlineKeyboardButton("📅 List Reminders", callback_data="lsreminders")],
+        [InlineKeyboardButton("💬 Switch language", callback_data="language")],
+        [InlineKeyboardButton("❓ Help", callback_data="help")],
+        
+    ]
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    target = await get_target_message(update, context)
+    
+    await target.reply_text(bot_send_message(lang, "options_menu"), reply_markup=reply_markup)
+
+
+async def button_handler(update, context):
+    # Handle button presses
+    query = update.callback_query
+    data = query.data
+    lang = get_lang(query.from_user.id)
+
+    # Answer the callback query to remove the loading indicator
+    await query.answer()
+
+    # Handle the button press based on the callback data
+    if data == "weather":
+        await query.message.reply_text(get_weather("São Paulo", lang))
+    elif data == "news":
+        await query.message.reply_text(get_news("general"))
+    elif data == "lsreminders":
+        await lsreminders_cmd(update, context)
+    elif data == "language":
+        await language_cmd(update=update, context=context)
+    elif data == "help":
+        await help_cmd(update=update, context=context)
 
 
 # ====================== Help command ======================
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = get_lang(update.effective_user.id)
     user = update.effective_user.first_name
-    await update.message.reply_text(bot_send_message(lang, "help_text").format(user=user))
+    
+    target = await get_target_message(update, context)
+    
+    await target.reply_text(bot_send_message(lang, "help_text").format(user=user))
+    await kbd_options_cmd(update=update, context=context)
 
 
+# ====================== Language change command ======================
 async def language_cmd(update, context):
     # Example: /language pt
     if context.args:
         lang = context.args[0].lower()
         set_lang(update.effective_user.id, lang)
         await update.message.reply_text(bot_send_message(lang, "lang_change").format(lang=lang))
-    else:
+    else: # If no arguments are provided, toggle between 'pt' and 'en'
         lang = get_lang(update.effective_user.id)
-        await update.message.reply_text(bot_send_message(lang, "lang_help"))
+        if lang == "pt":
+            lang = "en"
+            set_lang(update.effective_user.id, lang)
+        else:
+            lang = "pt"
+            set_lang(update.effective_user.id, lang)
+
+    target = await get_target_message(update, context)
+    
+    await target.reply_text(bot_send_message(lang, "lang_change").format(lang=lang))
 
 
 # ====================== Get the current weather ======================
@@ -162,10 +220,12 @@ async def lsreminders_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
             param = sched.get("param", "")
             msg_lines.append(bot_send_message(lang, "lsreminders_handler").format(sched_id=sched_id, time=time, handler=handler, param=param))
         else:
-            message = sched.get("message")
+            message = sched.get("message")    
             msg_lines.append(bot_send_message(lang, "lsreminders_message").format(sched_id=sched_id, time=time, message=message))
 
-    await update.message.reply_text("\n\n".join(msg_lines))
+    target = await get_target_message(update, context)
+
+    await target.reply_text("\n\n".join(msg_lines))
 
 
 async def rmreminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):

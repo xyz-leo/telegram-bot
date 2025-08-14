@@ -6,6 +6,16 @@ from reminder import schedule_message_job
 from messages import bot_send_message
 
 
+# --- Get if the message came from an update or query ---
+async def get_target_message(update, context):
+    if update.message:  # Normal message
+        return update.message
+    elif update.callback_query:  # Inline button
+        await update.callback_query.answer()  # Answer the callback
+        return update.callback_query.message
+    return None
+
+
 def get_weather(city: str, lang: str) -> str:
     try:
         base_url = "https://api.openweathermap.org/data/2.5/weather"

@@ -26,9 +26,6 @@ dist/
 .idea/
 *.swp
 
-push.txt
-
 # users related
-
 reminders.json
 user_prefs.json

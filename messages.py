@@ -2,10 +2,11 @@ MESSAGES = {
   "pt": {
       # ====================== Help message ======================
       "help_text": (
-          "Olá, {user}!\n"
-          "Todos os comandos começam com '/' e também possuem uma abreviação.\n\n"
+          "👋 Olá, {user}!\n"
+          "❗ Todos os comandos começam com '/' e também possuem uma abreviação.\n\n"
           "Aqui estão os comandos disponíveis para este bot:\n\n"
-          "• ▶️ /st ou /start - Iniciar o bot e mostrar essa mensagem de ajuda.\n\n"
+          "• ▶️ /st ou /start - Iniciar o chat com o bot.\n\n"
+          "• 🤖 /options ou /op - Mostrar menu de opções rápidas.\n\n"
           "• 💬 /lg ou /language <pt|en> - Mudar idioma. Exemplo: /lg pt\n\n"
           "• 🌦️ /wt ou /weather <city> - Checar previsão do tempo em uma cidade. Exemplo: /weather Sao Paulo\n\n"
           "• 📰 /nw ou /news <topic> - Checar as notícias de um tópico ou categoria. Exemplo: /news esportes\n\n"
@@ -21,10 +22,13 @@ MESSAGES = {
       "welcome": "👋 Olá, seja bem-vindo, {user}!\n\nEu sou seu bot de lembretes, projetado por xyz-leo.\nEu posso te mandar mensagens agendadas para te lembrar de tarefas, eventos, clima ou qualquer coisa importante.\n\nPor favor, digite /help para consultar informações e comandos e disponíveis.",
 
       
+      # ====================== Options menu message ======================
+      "options_menu": "😊 O que você deseja fazer?",
+      
+      
       # ====================== language change message ======================
       "lang_change": "💬 Idioma definido para português brasileiro, {lang}-BR",
-      "lang_help": "❗ Digite /language <pt|en>, exemplo: /language pt",
-
+      
       
       # ====================== Weather message ======================
       "weather": "🌦️ O clima em {city} está '{description}' com a temperatura de {temp}°C.",
@@ -54,10 +58,10 @@ MESSAGES = {
   "en": {
       # ====================== Help message ======================
       "help_text": (
-          "Hello, {user}!\n"
-          "\nAll commands start with '/' and also have an abbreviation.\n\n"
+          "\n❗ All commands start with '/' and also have an abbreviation. If you prefeer, you can type /op to show quick commands\n\n"
           "Here is the available commands for this bot:\n\n"
-          "• ▶️ /st or /start - Start the bot and show this help message\n\n"
+          "• ▶️ /st or /start - Start chatting with the bot\n\n"
+          "• 🤖 /options or /op - Show quick options menu.\n\n"
           "• 💬 /lg or /language <pt|en> - Change the language. Example: /lg pt\n\n"
           "• 🌦️ /wt or /weather <city> - Get current weather for a city. Example: /weather Sao Paulo\n\n"
           "• 📰 /nw or /news <topic> - Get the current news for a topic or category. Example: /news sports\n\n"
@@ -73,10 +77,13 @@ MESSAGES = {
       "welcome": "👋 Hello, welcome, {user}!\n\nI’m your personal reminder bot, projected by xyz-leo.\nI can send you scheduled messages to help you remember tasks, events, weather or anything important.\n\nPlease, type /help to check information and avaiable commands.",
 
       
+      # ====================== Options menu message ======================
+      "options_menu": "😊 What do you want to do?",
+
+      
       #  ====================== language change message ======================
       "lang_change": "💬 Language set to American English, {lang}-US",
-      "lang_help": "❗ Type /language <pt|en>, example: /config en",
-
+      
       
       # ====================== Weather ======================
       "weather": "🌦️ The weather in {city} is '{description}' with temperature of {temp}°C.",
