@@ -4,13 +4,15 @@ from pathlib import Path
 
 PREFS_FILE = Path("user_prefs.json")
 
-# Carregar preferências
+# Load preferences
 if PREFS_FILE.exists():
     with open(PREFS_FILE, "r", encoding="utf-8") as f:
         USER_PREFS = json.load(f)
 else:
     USER_PREFS = {}
 
+
+# --- Get and set user language ---
 def get_lang(user_id):
     """Return the user language, or english as default"""
     return USER_PREFS.get(str(user_id), {}).get("lang", "pt")

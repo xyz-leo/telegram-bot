@@ -1,9 +1,35 @@
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup # for creating inline keyboards
 import requests # for making HTTP requests
 from config import OPENWEATHER_API_KEY, NEWSAPI_KEY # for accessing API keys
 import json
 import os
 from reminder import schedule_message_job
 from messages import bot_send_message
+from user_pref import get_lang
+
+
+# --- To create handler keyboard options dinamically ---
+async def send_kbd_menu(update, context, options: list[tuple[str, str]], message_key: str):
+    """
+    Create and send an inline keyboard, based in a option list.
+
+    Args:
+        update: Update object received by the handler;
+        context: Telegram Context;
+        options: Tuple list with label and callback_data;
+        message_key: Key to get the message in the messages dictionary.
+    """
+    lang = get_lang(update.effective_user.id)
+
+    # Creates the keyboard dinamically
+    keyboard = [[InlineKeyboardButton(label, callback_data=callback)] for label, callback in options]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    # Get the target message (update.message or callback_query)
+    target = await get_target_message(update, context)
+
+    # Send the message with the keyboard
+    await target.reply_text(bot_send_message(lang, message_key), reply_markup=reply_markup)
 
 
 # --- Get if the message came from an update or query ---

@@ -1,11 +1,11 @@
-from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update 
 from telegram.ext import ContextTypes
-from utils import get_target_message, get_weather, get_news, add_schedule, remove_schedule, load_schedules
+from utils import send_kbd_menu, get_target_message, get_weather, get_news, add_schedule, remove_schedule, load_schedules
 import reminder # for scheduling tasks
-import re
-import uuid
-from messages import bot_send_message
-from user_pref import get_lang, set_lang
+import re # for regular expressions, used to validate time format
+import uuid # for generating unique IDs
+from messages import bot_send_message # for sending messages in user language
+from user_pref import get_lang, set_lang # for getting and setting user language
 
 
 # ====================== Start command ======================
@@ -13,30 +13,55 @@ async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = get_lang(update.effective_user.id)
     user = update.effective_user.first_name
     await update.message.reply_text(bot_send_message(lang, "welcome").format(user=user))
-    await kbd_options_cmd(update=update, context=context)
+    await main_kbd_cmd(update=update, context=context)
 
 
-# ====================== Keyboard options ======================
-async def kbd_options_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+# ====================== Handlers for keyboard options ======================
+# Command: /options
+async def main_kbd_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = get_lang(update.effective_user.id)
     
-    # Create a keyboard with inline buttons
-    keyboard = [
-        [InlineKeyboardButton("🌤 Weather", callback_data="weather")],
-        [InlineKeyboardButton("📰 News", callback_data="news")],
-        [InlineKeyboardButton("📅 List Reminders", callback_data="lsreminders")],
-        [InlineKeyboardButton("💬 Switch language", callback_data="language")],
-        [InlineKeyboardButton("❓ Help", callback_data="help")],
+    options = [
+        (bot_send_message(lang, "option_weather"), "weather"),
+        (bot_send_message(lang, "option_news"), "news"),
+        (bot_send_message(lang, "option_list_reminders"), "lsreminders"),
+        (bot_send_message(lang, "option_switch_language"), "language"),
+        (bot_send_message(lang, "option_help"), "help"),
+    ]
+    await send_kbd_menu(update, context, options, "options_menu")
+
+
+async def weather_kbd_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    options = [
+        ("São Paulo", "weather|Sao Paulo"),
+        ("Minas Gerais", "weather|Minas Gerais"),
+        ("Rio de Janeiro", "weather|Rio de Janeiro"),
+        ("Bahia", "weather|Bahia"),
+        ("Paraná", "weather|Paraná"),
+        ("Rio Grande do Sul", "weather|Rio Grande do Sul"),
+        ("Pernambuco", "weather|Pernambuco"),
+        ("Ceará", "weather|Ceará"),
+        ("Fortaleza", "weather|Fortaleza"),
+        ("Manaus", "weather|Manaus"),
         
     ]
-    
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    target = await get_target_message(update, context)
-    
-    await target.reply_text(bot_send_message(lang, "options_menu"), reply_markup=reply_markup)
+    await send_kbd_menu(update, context, options, "weather_menu")
 
 
+async def news_kbd_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    options = [
+        ("General", "news|General"),
+        ("Technology", "news|Technology"),
+        ("Sports", "news|Sports"),
+        ("Business", "news|Business"),
+        ("Entertainment", "news|Entertainment"),
+        ("Health", "news|Health"),
+        ("Science", "news|Science"),
+    ]
+    await send_kbd_menu(update, context, options, "news_menu")
+
+
+# Logic to handle button presses by the user
 async def button_handler(update, context):
     # Handle button presses
     query = update.callback_query
@@ -46,11 +71,20 @@ async def button_handler(update, context):
     # Answer the callback query to remove the loading indicator
     await query.answer()
 
+    # If the data starts with "weather|", it means the user selected a city
+    if data.startswith("weather|"):
+        city = data.split("|")[1]
+        await query.message.reply_text(get_weather(city, lang))
+
+    if data.startswith("news|"):
+        topic = data.split("|")[1]
+        await query.message.reply_text(get_news(topic))
+        
     # Handle the button press based on the callback data
     if data == "weather":
-        await query.message.reply_text(get_weather("São Paulo", lang))
+        await weather_kbd_menu(update, context)
     elif data == "news":
-        await query.message.reply_text(get_news("general"))
+        await news_kbd_menu(update, context)
     elif data == "lsreminders":
         await lsreminders_cmd(update, context)
     elif data == "language":
@@ -67,7 +101,7 @@ async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     target = await get_target_message(update, context)
     
     await target.reply_text(bot_send_message(lang, "help_text").format(user=user))
-    await kbd_options_cmd(update=update, context=context)
+    await main_kbd_cmd(update=update, context=context)
 
 
 # ====================== Language change command ======================
@@ -108,7 +142,7 @@ async def weather_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # ====================== Get the news ======================
-VALID_TOPICS = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
+VALID_TOPICS = ["business", "entertainment", "general", "health", "science", "sports", "technology", "crime", "education", "politics", "music"]
 
 async def news_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # If no arguments given, explain valid categories and usage

@@ -1,4 +1,4 @@
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, filters
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler
 import handlers
 from config import TOKEN
 from utils import load_and_schedule_all
@@ -8,7 +8,7 @@ from utils import load_and_schedule_all
 def register_handlers(app):
     commands = [
         (["start", "st"], handlers.start_cmd),
-        (["options", "op"], handlers.kbd_options_cmd),
+        (["options", "op"], handlers.main_kbd_cmd),
         (["help", "hp"], handlers.help_cmd),
         (["language", "lg"], handlers.language_cmd),
         (["weather", "wt"], handlers.weather_cmd),
@@ -17,10 +17,12 @@ def register_handlers(app):
         (["lsreminders", "lsre"], handlers.lsreminders_cmd),
         (["rmreminder", "rmre"], handlers.rmreminder_cmd),
     ]
+    # Register all commands above
     for cmd_list, func in commands:
         for cmd in cmd_list:
             app.add_handler(CommandHandler(cmd, func))
 
+    # Register the handler function to handle button presses
     app.add_handler(CallbackQueryHandler(handlers.button_handler))
 
 

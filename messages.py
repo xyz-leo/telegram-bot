@@ -2,13 +2,13 @@ MESSAGES = {
   "pt": {
       # ====================== Help message ======================
       "help_text": (
-          "👋 Olá, {user}!\n"
-          "❗ Todos os comandos começam com '/' e também possuem uma abreviação.\n\n"
+          "👋 Olá, {user}, precisa de ajuda?\n\n"
+          "❗ Todos os comandos começam com '/' e também possuem uma abreviação. Se preferir, digite /op quando precisar listar as opções rápidas.\n\n"
           "Aqui estão os comandos disponíveis para este bot:\n\n"
           "• ▶️ /st ou /start - Iniciar o chat com o bot.\n\n"
-          "• 🤖 /options ou /op - Mostrar menu de opções rápidas.\n\n"
+          "• 🤖 /op ou /options - Mostrar menu de opções rápidas. Seu melhor amigo.\n\n"
           "• 💬 /lg ou /language <pt|en> - Mudar idioma. Exemplo: /lg pt\n\n"
-          "• 🌦️ /wt ou /weather <city> - Checar previsão do tempo em uma cidade. Exemplo: /weather Sao Paulo\n\n"
+          "• 🌤 /wt ou /weather <city> - Checar previsão do tempo em uma cidade. Exemplo: /weather Sao Paulo\n\n"
           "• 📰 /nw ou /news <topic> - Checar as notícias de um tópico ou categoria. Exemplo: /news esportes\n\n"
           "• 📝 /re ou /reminder <HH:MM> <message> - Agendar uma mensagem para ser enviada numa hora específica, todos os dias.\n\n"
           "• 📅 /lsre or /lsreminders - Listar todos os lembretes agendados.\n\n"
@@ -23,7 +23,17 @@ MESSAGES = {
 
       
       # ====================== Options menu message ======================
-      "options_menu": "😊 O que você deseja fazer?",
+      # Options
+      "option_weather": "🌤 Ver clima",
+      "option_news": "📰 Ver notícias",
+      "option_list_reminders": "📅 Listar lembretes",
+      "option_switch_language": "💬 Mudar idioma",
+      "option_help": "❓ Ajuda",
+      
+      # Menu
+      "options_menu": "😊 O que você deseja fazer agora?",
+      "weather_menu": "Se o estado/cidade não estiver listado, digite manualmente com /weather <city>. Exemplo: /weather São Paulo\n\n🌤 Qual estado deseja ver o clima?",
+      "news_menu": "Se o tópico não estiver listado, digite o tópico desejado com /news <topic>. Exemplo: /news linux\n\n📰 Qual tópico deseja ver as notícias?",
       
       
       # ====================== language change message ======================
@@ -31,7 +41,7 @@ MESSAGES = {
       
       
       # ====================== Weather message ======================
-      "weather": "🌦️ O clima em {city} está '{description}' com a temperatura de {temp}°C.",
+      "weather": "🌤 O clima em {city} está '{description}' com a temperatura de {temp}°C.",
       "weather_not_city": "Cidade não fornecida. Usando 'São Paulo' como padrão.",
       "weather_error": "❗ Não foi possível obter o clima para a cidade especificada. '{city}'",
 
@@ -58,12 +68,13 @@ MESSAGES = {
   "en": {
       # ====================== Help message ======================
       "help_text": (
-          "\n❗ All commands start with '/' and also have an abbreviation. If you prefeer, you can type /op to show quick commands\n\n"
+          "👋 Hello, {user}, need help?\n\n"
+          "❗ All commands start with '/' and also have an abbreviation. If you prefeer, you can type /op when you need to list the quick commands!\n\n"
           "Here is the available commands for this bot:\n\n"
           "• ▶️ /st or /start - Start chatting with the bot\n\n"
-          "• 🤖 /options or /op - Show quick options menu.\n\n"
+          "• 🤖 /op or /options - Show quick options menu. Your best friend.\n\n"
           "• 💬 /lg or /language <pt|en> - Change the language. Example: /lg pt\n\n"
-          "• 🌦️ /wt or /weather <city> - Get current weather for a city. Example: /weather Sao Paulo\n\n"
+          "• 🌤 /wt or /weather <city> - Get current weather for a city. Example: /weather Sao Paulo\n\n"
           "• 📰 /nw or /news <topic> - Get the current news for a topic or category. Example: /news sports\n\n"
           "• 📝 /re or /reminder <HH:MM> <message> - Schedule a message to be sent at a specific time, everyday\n\n"
           "• 📅 /lsre or /lsreminders - List all scheduled reminders\n\n"
@@ -78,15 +89,24 @@ MESSAGES = {
 
       
       # ====================== Options menu message ======================
-      "options_menu": "😊 What do you want to do?",
+      # Options
+      "option_weather": "🌤 See weather",
+      "option_news": "📰 See news",
+      "option_list_reminders": "📅 List reminders",
+      "option_switch_language": "💬 Switch language",
+      "option_help": "❓ Help",
 
+      # Menu
+      "options_menu": "😊 What do you want to do now?",
+      "weather_menu": "If the state/city is not listed, type manually with /weather <city>. Example: /weather São Paulo\n\n🌤 Which state do you want to see the weather?",
+      "news_menu": "If the topic is not listed, type the desired topic with /news <topic>. Example: /news linux\n\n📰 Which topic do you want to see the news?",
       
       #  ====================== language change message ======================
       "lang_change": "💬 Language set to American English, {lang}-US",
       
       
       # ====================== Weather ======================
-      "weather": "🌦️ The weather in {city} is '{description}' with temperature of {temp}°C.",
+      "weather": "🌤 The weather in {city} is '{description}' with temperature of {temp}°C.",
       "weather_not_city": "City not provided. Using 'São Paulo' as standard.",
       "weather_error": "❗ Could not obtain the weather for the specified city. '{city}'",
 
