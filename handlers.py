@@ -5,7 +5,7 @@ import reminder # for scheduling tasks
 import re # for regular expressions, used to validate time format
 import uuid # for generating unique IDs
 from messages import bot_send_message # for sending messages in user language
-from user_pref import get_lang, set_lang # for getting and setting user language
+from user_pref import get_lang, increment_bot_calls, set_lang # for getting and setting user language
 import requests
 
 
@@ -15,6 +15,7 @@ async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user.first_name
     await update.message.reply_text(bot_send_message(lang, "welcome").format(user=user))
     await main_kbd_cmd(update=update, context=context)
+    increment_bot_calls(update.effective_user.id, "start")
 
 
 # ====================== Handlers for keyboard options ======================
@@ -74,6 +75,7 @@ async def button_handler(update, context):
             
         city = data.split("|")[1]
         await query.message.reply_text(get_weather(city, lang))
+        increment_bot_calls(user_id, "weather")
         
     await query.answer()
     # Handle the button press based on the callback data
@@ -99,11 +101,10 @@ async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not check_cooldown(user_id, 5):
         await target.reply_text(bot_send_message(lang, "cooldown_message"))
         return
-        
     
     await target.reply_text(bot_send_message(lang, "help_text").format(user=user))
     await main_kbd_cmd(update=update, context=context)
-
+    increment_bot_calls(user_id, "help")
 
 # ====================== Language change command ======================
 async def language_cmd(update, context):
@@ -137,7 +138,7 @@ async def language_cmd(update, context):
             set_lang(user_id, lang)
 
     await target.reply_text(bot_send_message(lang, "lang_change").format(lang=lang))
-
+    increment_bot_calls(user_id, "language_change")
 
 # ====================== Get the current weather ======================
 async def weather_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -160,7 +161,7 @@ async def weather_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         weather_report = get_weather(city, lang)
         await update.message.reply_text(bot_send_message(lang, "weather_not_city"))
         await update.message.reply_text(weather_report)
-
+        increment_bot_calls(user_id, "weather")
 
 # ====================== Schedule Reminders  ======================
 # Command: /schedule <HH:MM> <message> OR /schedule <HH:MM> <handler> <param>
@@ -231,6 +232,7 @@ async def reminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     })
 
     await update.message.reply_text(bot_send_message(lang, "reminder_scheduled").format(time=time_str, schedule_id=schedule_id))
+    increment_bot_calls(user_id, "add_reminder")
 
 
 # ====================== List Reminders ======================
@@ -268,6 +270,7 @@ async def lsreminders_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     target = await get_target_message(update, context)
 
     await target.reply_text("\n\n".join(msg_lines))
+    increment_bot_calls(user_id, "list_reminders")
 
 
 # ====================== Remove Reminders ======================
@@ -304,6 +307,7 @@ async def rmreminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         job.schedule_removal()
 
     await update.message.reply_text(bot_send_message(lang, "rmreminder_removed"))
+    increment_bot_calls(user_id, "remove_reminder")
 
 
 # ====================== Fun Fact command ======================
@@ -328,8 +332,10 @@ async def curiosity_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await target.reply_text(bot_send_message(lang, "curiosity_disclaimer"))
         await target.reply_text(bot_send_message(lang, "curiosity_message").format(fact=fact))
+        increment_bot_calls(user_id, "curiosity")
     except Exception as e:
         await target.reply_text(bot_send_message(lang, "curiosity_error"))
+        
 
 
 # ====================== Translate ======================
@@ -354,3 +360,4 @@ async def translate_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     translated = translate_text(text_to_translate, source=source_lang, target=target_lang)
 
     await target.reply_text(bot_send_message(lang, "translated_message").format(source=source_lang, target=target_lang, translated=translated))
+    increment_bot_calls(user_id, "translate")

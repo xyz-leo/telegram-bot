@@ -3,11 +3,11 @@ import requests # for making HTTP requests
 from config import OPENWEATHER_API_KEY # for accessing API keys
 import json
 import os
-from reminder import schedule_message_job
-from messages import bot_send_message
-from user_pref import get_lang
-from deep_translator import GoogleTranslator
-from time import time
+from reminder import schedule_message_job # for scheduling tasks
+from messages import bot_send_message # for sending messages in user language
+from user_pref import get_lang # for getting user language
+from deep_translator import GoogleTranslator # for translating text
+from time import time # for checking cooldown
 
 
 # --- To create handler keyboard options dinamically ---

@@ -4,7 +4,7 @@
 
 This project is a Telegram bot implemented using the `python-telegram-bot` library. The bot allows users to schedule reminders that send messages or trigger predefined commands (handlers) at specified times daily. It supports multiple users, storing scheduled tasks persistently in a JSON file, and reloading them automatically when the bot restarts.
 
-The bot also includes commands for getting weather information and other stuff, which can be scheduled as reminders.
+The bot also includes commands for getting weather information, translating text to any language, and other stuff, which also can be scheduled as reminders.
 
 ## IMPORTANT
 
@@ -87,7 +87,17 @@ Users language preferences are saved persistently in a JSON file, so the bot rem
 - Users must wait a configurable period (default 2 seconds) between actions.
 - Alerts notify users if they attempt to interact before the cooldown expires.
 
-### 8. Commands
+### 8. Bot Call Counter
+
+- The bot keeps track of how many times each type of action is executed per user.
+- This is useful for possible metrics, usage limits, or statistics.
+
+Storage structure
+
+The bot_calls field inside the user's preferences dictionary is now always a dictionary,
+where the key is the call type (call_type) and the value is the number of executions.
+
+### 9. Commands
 
 - `/start` - Welcomes the user and displays available commands.
 - `/help` - Shows help information listing available commands.
