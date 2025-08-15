@@ -53,9 +53,9 @@ MESSAGES = {
       
       # List reminders
       "no_reminders": "Você não tem lembretes.",
-      "lsreminders": "📅 Aqui estão seus lembretes agendados:",
-      "lsreminders_handler": "___________________________________________\n📨 Handler: {handler} {param}\n\n⏰ Hora: {time}\n\n🆔: {sched_id}\n___________________________________________",
-      "lsreminders_message": "___________________________________________\n📨 Mensagem: {message}\n\n⏰ Hora: {time}\n\n🆔: {sched_id}\n___________________________________________",
+      "lsreminders": "📅 Aqui estão seus lembretes agendados:\n___________________________________________",
+      "lsreminders_handler": "📨 Handler: {handler} {param}\n\n⏰ Hora: {time}\n\n🆔: {sched_id}\n___________________________________________",
+      "lsreminders_message": "📨 Mensagem: {message}\n\n⏰ Hora: {time}\n\n🆔: {sched_id}\n___________________________________________",
 
       #  Remove reminders
       "rmreminder_usage": "Uso: /rmreminder <schedule_id>",
@@ -78,6 +78,11 @@ MESSAGES = {
       # ====================== Cooldown message ======================
       "cooldown_message": "⏳ Você está clicando muito rápido. Aguarde alguns segundos antes de tentar novamente.",
 
+      
+      # ====================== User Data ======================
+      "userdata": "👤 Dados do Usuário",
+      "user_data": "👤 Dados do Usuário\n___________________________________________\nNome: {user_name}\nID: {user_id}\nLanguage: {lang}-BR\n\nComandos solicitados:\n{commands}",
+      
       
       # ====================== Unknown command message ======================
       "unknown": "❓ Não entendi. Digite /help para ver os comandos",
@@ -135,9 +140,9 @@ MESSAGES = {
 
       # List reminders
       "no_reminders": "You have no reminders.",
-      "lsreminders": "📅 Here are your scheduled reminders:",
-      "lsreminders_handler": "___________________________________________\n📨 Handler: {handler} {param}\n\n⏰ Time: {time}\n\n🆔: {sched_id}\n___________________________________________",
-      "lsreminders_message": "___________________________________________\n📨 Message: {message}\n\n⏰ Time: {time}\n\n🆔: {sched_id}\n___________________________________________",
+      "lsreminders": "📅 Here are your scheduled reminders:\n___________________________________________",
+      "lsreminders_handler": "📨 Handler: {handler} {param}\n\n⏰ Time: {time}\n\n🆔: {sched_id}\n___________________________________________",
+      "lsreminders_message": "📨 Message: {message}\n\n⏰ Time: {time}\n\n🆔: {sched_id}\n___________________________________________",
 
       #  Remove reminders
       "rmreminder_usage": "Usage: /rmreminder <schedule_id>",
@@ -160,6 +165,11 @@ MESSAGES = {
       # ====================== Cooldown message ======================
       "cooldown_message": "⏳ You are clicking too fast. Wait a few seconds before trying again.",
       
+
+      # ====================== User Data ======================
+      "userdata": "👤 User Data",
+      "user_data": "👤 User Data\n___________________________________________\nName: {user_name}\nID: {user_id}\nLanguage: {lang}-US\n\nCommands requested:\n{commands}",
+
       
       # ====================== Unknown command message ======================
       "unknown": "❓ I didn’t understand. Type /help to see commands.",

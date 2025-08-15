@@ -54,6 +54,8 @@ From the main menu, users can access:
 
 💡 Curiosity - Shows a random fact.
 
+👤 User data - Request your data usage.
+
 ❓ Help – Shows usage instructions.
 
 Each submenu returns specific callback data to the button_handler function, which processes the user's selection and responds accordingly.
@@ -91,13 +93,13 @@ Users language preferences are saved persistently in a JSON file, so the bot rem
 
 - The bot keeps track of how many times each type of action is executed per user.
 - This is useful for possible metrics, usage limits, or statistics.
-
-Storage structure
-
-The bot_calls field inside the user's preferences dictionary is now always a dictionary,
+- Storage structure: The bot_calls field inside the user's preferences dictionary is now always a dictionary,
 where the key is the call type (call_type) and the value is the number of executions.
 
-### 9. Commands
+### 9. See User Data
+- The user can use the /userdata command to view all data stored on the server, which is their current language and the number of times each command has been used.
+
+### 10. Commands
 
 - `/start` - Welcomes the user and displays available commands.
 - `/help` - Shows help information listing available commands.
@@ -109,6 +111,7 @@ where the key is the call type (call_type) and the value is the number of execut
 - `/lsreminders` - Lists all active reminders for the user.
 - `/rmreminder <schedule_id>` - Removes a scheduled reminder by its ID.
 - `/curiosity` - Shows a random fun fact.
+- `/userdata` - View all your data stored in the server.
 
 ---
 

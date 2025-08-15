@@ -22,6 +22,10 @@ def save_user_pref(user_id, key, value):
         json.dump(USER_PREFS, f, ensure_ascii=False, indent=2)
 
 
+def get_user_pref(user_id):
+    """Returns the user preferences as a dictionary"""
+    return USER_PREFS.get(str(user_id), {})
+
 # --- Language Getters and setters ---
 def get_lang(user_id):
     """Return the user's language, default 'pt'."""

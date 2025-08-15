@@ -5,7 +5,7 @@ import reminder # for scheduling tasks
 import re # for regular expressions, used to validate time format
 import uuid # for generating unique IDs
 from messages import bot_send_message # for sending messages in user language
-from user_pref import get_lang, increment_bot_calls, set_lang # for getting and setting user language
+from user_pref import get_lang, increment_bot_calls, set_lang, get_user_pref # for getting and setting user language
 import requests
 
 
@@ -28,6 +28,7 @@ async def main_kbd_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         (bot_send_message(lang, "option_list_reminders"), "lsreminders"),
         (bot_send_message(lang, "option_switch_language"), "language"),
         (bot_send_message(lang, "curiosity"), "curiosity"),
+        (bot_send_message(lang, "userdata"), "userdata"),
         (bot_send_message(lang, "option_help"), "help"),
     ]
     await send_kbd_menu(update, context, options, "options_menu")
@@ -87,6 +88,8 @@ async def button_handler(update, context):
         await language_cmd(update=update, context=context)
     elif data == "curiosity":
         await curiosity_cmd(update=update, context=context)
+    elif data == "userdata":
+        await display_user_data_cmd(update=update, context=context)
     elif data == "help":
         await help_cmd(update=update, context=context)
 
@@ -361,3 +364,27 @@ async def translate_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await target.reply_text(bot_send_message(lang, "translated_message").format(source=source_lang, target=target_lang, translated=translated))
     increment_bot_calls(user_id, "translate")
+
+
+# ====================== Display User Data ======================
+async def display_user_data_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    
+    user_id = update.effective_user.id
+    user_name = update.effective_user.first_name
+    lang = get_lang(user_id)
+    target = await get_target_message(update, context)
+    
+    if not check_cooldown(user_id, 3):
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+        
+    data =  get_user_pref(user_id)
+    commands = ""
+
+    # Iterate over the bot_calls dictionary and format the string
+    for command, count in data['bot_calls'].items():
+        commands += f"{command}: {count}\n"
+
+    await target.reply_text(bot_send_message(lang, "user_data").format(user_name=user_name, user_id=user_id, lang=lang, commands=commands))
+    
+    increment_bot_calls(user_id, "request_user_data")
