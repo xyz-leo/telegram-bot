@@ -6,6 +6,8 @@ import os
 from reminder import schedule_message_job
 from messages import bot_send_message
 from user_pref import get_lang
+from deep_translator import GoogleTranslator
+from time import time
 
 
 # --- To create handler keyboard options dinamically ---
@@ -32,7 +34,7 @@ async def send_kbd_menu(update, context, options: list[tuple[str, str]], message
     await target.reply_text(bot_send_message(lang, message_key), reply_markup=reply_markup)
 
 
-# --- Get if the message came from an update or query ---
+# --- Get the target message (update.message or callback_query) ---
 async def get_target_message(update, context):
     if update.message:  # Normal message
         return update.message
@@ -42,6 +44,7 @@ async def get_target_message(update, context):
     return None
 
 
+# ====================== Get the current weather ======================
 def get_weather(city: str, lang: str) -> str:
     try:
         base_url = "https://api.openweathermap.org/data/2.5/weather"
@@ -65,6 +68,7 @@ def get_weather(city: str, lang: str) -> str:
         return f"Unexpected error: {e}"
 
 
+# ====================== Reminders ======================
 REMINDERS_FILE = "reminders.json"
 
 def load_schedules():
@@ -112,3 +116,36 @@ def load_and_schedule_all(job_queue):
             time_str = sched["time"]
             job_data = sched
             schedule_message_job(job_queue, int(chat_id_str), time_str, job_data)
+
+
+# ====================== Translate text ======================
+def translate_text(text, source="en", target="pt"):
+    """
+    Translate a text from source language to target language.
+    Returns the translated text, or the original if there was an error.
+    """
+    try:
+        return GoogleTranslator(source=source, target=target).translate(text)
+    except Exception as e:
+        print("Translation error:", e)
+        return text
+
+
+# ====================== Cooldown to prevent user span ======================
+
+# Store the last timestamp of each user's action
+user_last_action = {}
+
+def check_cooldown(user_id: int, cooldown_seconds: int = 2) -> bool:
+    """
+    Returns True if the user can proceed, False if still in cooldown.
+    """
+    now = time()
+    last = user_last_action.get(user_id, 0)
+
+    if now - last < cooldown_seconds:
+        return False  # User is still in cooldown
+
+    # Update the last timestamp
+    user_last_action[user_id] = now
+    return True

@@ -1,11 +1,12 @@
 from telegram import Update 
 from telegram.ext import ContextTypes
-from utils import send_kbd_menu, get_target_message, get_weather, add_schedule, remove_schedule, load_schedules
+from utils import send_kbd_menu, get_target_message, get_weather, add_schedule, remove_schedule, load_schedules, translate_text, check_cooldown
 import reminder # for scheduling tasks
 import re # for regular expressions, used to validate time format
 import uuid # for generating unique IDs
 from messages import bot_send_message # for sending messages in user language
 from user_pref import get_lang, set_lang # for getting and setting user language
+import requests
 
 
 # ====================== Start command ======================
@@ -25,12 +26,21 @@ async def main_kbd_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         (bot_send_message(lang, "option_weather"), "weather"),
         (bot_send_message(lang, "option_list_reminders"), "lsreminders"),
         (bot_send_message(lang, "option_switch_language"), "language"),
+        (bot_send_message(lang, "curiosity"), "curiosity"),
         (bot_send_message(lang, "option_help"), "help"),
     ]
     await send_kbd_menu(update, context, options, "options_menu")
 
 
 async def weather_kbd_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    lang = get_lang(user_id)
+
+    if not check_cooldown(user_id, 5):
+        target = await get_target_message(update, context)
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+        
     options = [
         ("São Paulo", "weather|Sao Paulo"),
         ("Minas Gerais", "weather|Minas Gerais"),
@@ -49,19 +59,23 @@ async def weather_kbd_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Logic to handle button presses by the user
 async def button_handler(update, context):
-    # Handle button presses
+    # User information
     query = update.callback_query
+    user_id = query.from_user.id
+    lang = get_lang(user_id)
+        
     data = query.data
-    lang = get_lang(query.from_user.id)
-
-    # Answer the callback query to remove the loading indicator
-    await query.answer()
 
     # If the data starts with "weather|", it means the user selected a city
     if data.startswith("weather|"):
+        if not check_cooldown(user_id):
+            await query.answer(bot_send_message(lang, "cooldown_message"), show_alert=True)
+            return
+            
         city = data.split("|")[1]
         await query.message.reply_text(get_weather(city, lang))
         
+    await query.answer()
     # Handle the button press based on the callback data
     if data == "weather":
         await weather_kbd_menu(update, context)
@@ -69,16 +83,23 @@ async def button_handler(update, context):
         await lsreminders_cmd(update, context)
     elif data == "language":
         await language_cmd(update=update, context=context)
+    elif data == "curiosity":
+        await curiosity_cmd(update=update, context=context)
     elif data == "help":
         await help_cmd(update=update, context=context)
 
 
 # ====================== Help command ======================
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    lang = get_lang(update.effective_user.id)
-    user = update.effective_user.first_name
-    
+    user_id = update.effective_user.id
+    lang = get_lang(user_id)
     target = await get_target_message(update, context)
+    user = update.effective_user.first_name
+
+    if not check_cooldown(user_id, 5):
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+        
     
     await target.reply_text(bot_send_message(lang, "help_text").format(user=user))
     await main_kbd_cmd(update=update, context=context)
@@ -86,28 +107,48 @@ async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ====================== Language change command ======================
 async def language_cmd(update, context):
+    user_id = update.effective_user.id
+    
+    # Get the target message (update.message or callback_query)
+    target = await get_target_message(update, context)
+    lang = get_lang(user_id)
+    if not lang:
+        lang = 'pt'
+        set_lang(user_id, lang)
+
+    if not check_cooldown(user_id, 3):
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+    
     # Example: /language pt
     if context.args:
         lang = context.args[0].lower()
-        set_lang(update.effective_user.id, lang)
-        await update.message.reply_text(bot_send_message(lang, "lang_change").format(lang=lang))
-    else: # If no arguments are provided, toggle between 'pt' and 'en'
-        lang = get_lang(update.effective_user.id)
-        if lang == "pt":
-            lang = "en"
-            set_lang(update.effective_user.id, lang)
+        # Validate the language input
+        if lang not in ("pt", "en"):
+            return await target.reply_text(bot_send_message(lang, "lang_change_error"))
         else:
-            lang = "pt"
-            set_lang(update.effective_user.id, lang)
+            set_lang(user_id, lang)
+    else: # If no arguments are provided, toggle between 'pt' and 'en'
+        if lang == "pt":
+            lang = 'en'
+            set_lang(user_id, lang)
+        else:
+            lang = 'pt'
+            set_lang(user_id, lang)
 
-    target = await get_target_message(update, context)
-    
     await target.reply_text(bot_send_message(lang, "lang_change").format(lang=lang))
 
 
 # ====================== Get the current weather ======================
 async def weather_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    lang = get_lang(update.effective_user.id)
+    user_id = update.effective_user.id
+    lang = get_lang(user_id)
+    
+    if not check_cooldown(user_id, 4):
+        target = await get_target_message(update, context)
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+        
     # If user provides city name as arguments, fetch weather for that city
     if context.args:
         city = " ".join(context.args)
@@ -132,7 +173,14 @@ async def reminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
       /reminder <HH:MM> /handler param...
     """
     
-    lang = get_lang(update.effective_user.id)
+    user_id = update.effective_user.id
+    lang = get_lang(user_id)
+    
+    if not check_cooldown(user_id, 3):
+        target = await get_target_message(update, context)
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+         
     # Validate that user sent at least a time and one argument
     if len(context.args) < 2:
         await update.message.reply_text(bot_send_message(lang, "reminder_usage"))
@@ -169,13 +217,13 @@ async def reminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Schedule the job using the job queue, passing chat ID, time string, and job data
     job_name = reminder.schedule_message_job(
         context.job_queue,
-        update.effective_chat.id,
+        user_id,
         time_str,
         job_data
     )
 
     # Save the scheduled reminder persistently to disk for later reloading
-    add_schedule(update.effective_chat.id, {
+    add_schedule(user_id, {
         "id": schedule_id,
         "time": time_str,
         "job_name": job_name,
@@ -185,8 +233,16 @@ async def reminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(bot_send_message(lang, "reminder_scheduled").format(time=time_str, schedule_id=schedule_id))
 
 
+# ====================== List Reminders ======================
 async def lsreminders_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    lang = get_lang(update.effective_user.id)
+    user_id = update.effective_user.id
+    lang = get_lang(user_id)
+
+    if not check_cooldown(user_id, 5):
+        target = await get_target_message(update, context)
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+        
     chat_id = str(update.effective_chat.id)
     # Load all schedules for this chat/user
     schedules = load_schedules().get(chat_id, [])
@@ -214,8 +270,17 @@ async def lsreminders_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await target.reply_text("\n\n".join(msg_lines))
 
 
+# ====================== Remove Reminders ======================
 async def rmreminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    lang = get_lang(update.effective_user.id)
+    
+    user_id = update.effective_user.id
+    lang = get_lang(user_id)
+
+    if not check_cooldown(user_id):
+        target = await get_target_message(update, context)
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+        
     chat_id = str(update.effective_chat.id)
     if not context.args:
         await update.message.reply_text(bot_send_message(lang, "rmreminder_usage"))
@@ -239,3 +304,53 @@ async def rmreminder_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         job.schedule_removal()
 
     await update.message.reply_text(bot_send_message(lang, "rmreminder_removed"))
+
+
+# ====================== Fun Fact command ======================
+async def curiosity_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    lang = get_lang(user_id)
+    target = await get_target_message(update, context)
+
+    if not check_cooldown(user_id, 5):
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+    
+    try:
+        # Make the requisition to the API
+        url = "https://uselessfacts.jsph.pl/api/v2/facts/random?language=en"
+        response = requests.get(url)
+        data = response.json()
+
+        fact = data.get("text", bot_send_message(lang, "curiosity_error"))
+        if lang == "pt":
+            fact = translate_text(fact, source="en", target="pt")
+
+        await target.reply_text(bot_send_message(lang, "curiosity_disclaimer"))
+        await target.reply_text(bot_send_message(lang, "curiosity_message").format(fact=fact))
+    except Exception as e:
+        await target.reply_text(bot_send_message(lang, "curiosity_error"))
+
+
+# ====================== Translate ======================
+async def translate_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    lang = get_lang(user_id)
+    target = await get_target_message(update, context)
+
+    if not check_cooldown(user_id, 5):
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+
+    # Check if the user provided the necessary arguments
+    if len(context.args) < 3:
+        return await target.reply_text(bot_send_message(lang, "translate_usage"))
+
+    source_lang = context.args[0].lower()
+    target_lang = context.args[1].lower()
+    text_to_translate = " ".join(context.args[2:])
+
+    # Calls the utilitary function
+    translated = translate_text(text_to_translate, source=source_lang, target=target_lang)
+
+    await target.reply_text(bot_send_message(lang, "translated_message").format(source=source_lang, target=target_lang, translated=translated))

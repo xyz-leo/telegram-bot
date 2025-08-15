@@ -15,6 +15,8 @@ def register_handlers(app):
         (["reminder", "re"], handlers.reminder_cmd),
         (["lsreminders", "lsre"], handlers.lsreminders_cmd),
         (["rmreminder", "rmre"], handlers.rmreminder_cmd),
+        (["translate", "tr"], handlers.translate_cmd),
+        (["curiosity", "cr"], handlers.curiosity_cmd),
     ]
     # Register all commands above
     for cmd_list, func in commands:

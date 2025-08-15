@@ -9,9 +9,11 @@ MESSAGES = {
           "• 🤖 /op ou /options - Mostrar menu de opções rápidas. Seu melhor amigo.\n\n"
           "• 💬 /lg ou /language <pt|en> - Mudar idioma. Exemplo: /lg pt\n\n"
           "• 🌤 /wt ou /weather <city> - Checar previsão do tempo em uma cidade. Exemplo: /weather Sao Paulo\n\n"
+          "• 🦜 /tr ou /translate <de> <para> <text> - Traduzir texto de um idioma para outro. Exemplo: /translate en pt Hello world!\n\n"
           "• 📝 /re ou /reminder <HH:MM> <message> - Agendar uma mensagem para ser enviada numa hora específica, todos os dias.\n\n"
           "• 📅 /lsre or /lsreminders - Listar todos os lembretes agendados.\n\n"
           "• 🗑️ /rmre or /rmreminder <schedule_id> - Remove um lembrete agendado pelo ID. você pode pegar o ID com o comando /lsreminders\n\n"
+          "• 💡 /cr ou /curiosity - Envia uma curiosidade aleatória.\n\n"
           "• ❓ /hp or /help - Mostra essa mensagem de ajuda.\n"
           #... add more commands as needed
       ),
@@ -35,6 +37,7 @@ MESSAGES = {
       
       # ====================== language change message ======================
       "lang_change": "💬 Idioma definido para português brasileiro, {lang}-BR",
+      "lang_change_error": "❗ Idioma inválido. Use 'pt' ou 'en'.",
       
       
       # ====================== Weather message ======================
@@ -58,6 +61,23 @@ MESSAGES = {
       "rmreminder_usage": "Uso: /rmreminder <schedule_id>",
       "rmreminder_not_found": "❗ Nenhum lembrete encontrado com o ID {schedule_id}.",
       "rmreminder_removed": "🗑️ Lembrete removido.",
+
+      
+      # ====================== Curiosity ======================
+      "curiosity": "💡 Curiosidade",
+      "curiosity_message": "💡 Curiosidade:\n\n{fact}",
+      "curiosity_disclaimer": "⚠️ A curiosidade pode não ser verdadeira. Este comando é apenas para diversão.",
+      "curiosity_error": "❗ Não foi possível obter uma curiosidade agora.",
+
+      
+      # ====================== Translate ======================
+      "translated_message": "🦜 Traduzido ({source} → {target}):\n\n{translated}",
+      "translate_usage": "Uso: /translate <de> <para> <text>\nExemplo: /translate en pt Hello world!",
+
+      
+      # ====================== Cooldown message ======================
+      "cooldown_message": "⏳ Você está clicando muito rápido. Aguarde alguns segundos antes de tentar novamente.",
+
       
       # ====================== Unknown command message ======================
       "unknown": "❓ Não entendi. Digite /help para ver os comandos",
@@ -72,9 +92,12 @@ MESSAGES = {
           "• 🤖 /op or /options - Show quick options menu. Your best friend.\n\n"
           "• 💬 /lg or /language <pt|en> - Change the language. Example: /lg pt\n\n"
           "• 🌤 /wt or /weather <city> - Get current weather for a city. Example: /weather Sao Paulo\n\n"
+          "• 🦜 /tr ou /translate <from> <to> <text> - Translate text from one language to another. Example: /translate en pt Hello world!\n\n"
           "• 📝 /re or /reminder <HH:MM> <message> - Schedule a message to be sent at a specific time, everyday\n\n"
           "• 📅 /lsre or /lsreminders - List all scheduled reminders\n\n"
           "• 🗑️ /rmre or /rmreminder <schedule_id> - Remove a scheduled reminder by ID. You can get the ID with the command /lsreminders\n\n"
+
+          "• 💡 /cr ou /curiosity - Send a random curiosity.\n\n"
           "• ❓ /hp or /help - Show this help message\n"
           #... add more commands as needed
       ),
@@ -96,6 +119,7 @@ MESSAGES = {
       "weather_menu": "If the state/city is not listed, type manually with /weather <city>. Example: /weather São Paulo\n\n🌤 Which state do you want to see the weather?",      
       #  ====================== language change message ======================
       "lang_change": "💬 Language set to American English, {lang}-US",
+      "lang_change_error": "❗ Invalid language. Use 'pt' or 'en'.",
       
       
       # ====================== Weather ======================
@@ -119,6 +143,23 @@ MESSAGES = {
       "rmreminder_usage": "Usage: /rmreminder <schedule_id>",
       "rmreminder_not_found": "❗ No reminder found with ID {schedule_id}.",
       "rmreminder_removed": "🗑️ Reminder removed.",
+
+      
+      # ====================== Curiosity ======================
+      "curiosity": "💡 Curiosity",
+      "curiosity_message": "💡 Curiosity:\n\n{fact}",
+      "curiosity_disclaimer": "⚠️ The curiosity may not be true. This command is just for fun.",
+      "curiosity_error": "❗ Could not obtain a curiosity now.",
+
+      
+      # ====================== Translate ======================
+      "translated_message": "🦜 Translated ({source} → {target}):\n\n{translated}",
+      "translate_usage": "Usage: /translate <from> <to> <text>\nExample: /translate pt en Olá mundo!",
+
+      
+      # ====================== Cooldown message ======================
+      "cooldown_message": "⏳ You are clicking too fast. Wait a few seconds before trying again.",
+      
       
       # ====================== Unknown command message ======================
       "unknown": "❓ I didn’t understand. Type /help to see commands.",

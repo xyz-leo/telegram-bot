@@ -52,6 +52,8 @@ From the main menu, users can access:
 
 💬 Switch Language – Changes the interface language.
 
+💡 Curiosity - Shows a random fact.
+
 ❓ Help – Shows usage instructions.
 
 Each submenu returns specific callback data to the button_handler function, which processes the user's selection and responds accordingly.
@@ -65,16 +67,38 @@ The language system is implemented using message templates with placeholders, al
 
 Users language preferences are saved persistently in a JSON file, so the bot remembers the chosen language for future interactions.
 
-### 5. Commands
+### 5. Translate
+
+- Users can translate text via the command /translate <from> <to> <text>.
+- Uses deep-translator with the GoogleTranslator provider.
+- Works just from slash commands interactions.
+- Translation falls back to the original text if an error occurs.
+
+### 6. Curiosity facts
+
+- Users can request random fun facts using /curiosity.
+- Facts are retrieved from the API uselessfacts.jsph.pl, the bot translate into Portuguese if needed.
+- The feature works with inline buttons and slash command.
+
+### 7. Cooldown system
+
+- Prevents spam or repeated requests from the same user.
+- Applies to both inline button clicks and slash commands (/).
+- Users must wait a configurable period (default 2 seconds) between actions.
+- Alerts notify users if they attempt to interact before the cooldown expires.
+
+### 8. Commands
 
 - `/start` - Welcomes the user and displays available commands.
 - `/help` - Shows help information listing available commands.
 - `/language <lang>` - Switch between english and portuguese.
 - `/weather <city>` - Fetches weather information for a given city.
+- `/translate <from> <to> <text>` - Translate text from google translator.
 - `/reminder <HH:MM> <message>` - Schedule a simple message reminder at a specified 24-hour time.
 - `/reminder <HH:MM> /handler <param>` - Schedule a reminder that triggers a handler with optional parameters.
 - `/lsreminders` - Lists all active reminders for the user.
 - `/rmreminder <schedule_id>` - Removes a scheduled reminder by its ID.
+- `/curiosity` - Shows a random fun fact.
 
 ---
 
