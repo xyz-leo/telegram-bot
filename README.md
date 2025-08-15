@@ -14,9 +14,10 @@ I also removed all News API integrations as most are paid; kept only during deve
 
 ---
 
-## Screenshot
+## Screenshots
 
-![telegram-bot](https://github.com/user-attachments/assets/43970a17-a297-4eb9-ae5b-e0f050c973f1)
+![telegram-bot-ss1](https://github.com/user-attachments/assets/6d863d86-081e-49a1-8f9d-2f49dfabe0bf) ![telegram-bot-ss2](https://github.com/user-attachments/assets/366c3da2-4b7b-4ca9-9251-27df1ccd23e4)
+
 
 ## Features
 
