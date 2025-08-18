@@ -7,9 +7,10 @@ MESSAGES = {
           "Aqui estão os comandos disponíveis para este bot:\n\n"
           "• ▶️ /st ou /start - Iniciar o chat com o bot.\n\n"
           "• 🤖 /op ou /options - Mostrar menu de opções rápidas. Seu melhor amigo.\n\n"
-          "• 💬 /lg ou /language <pt|en> - Mudar idioma. Exemplo: /lg pt\n\n"
-          "• 🌤 /wt ou /weather <city> - Checar previsão do tempo em uma cidade. Exemplo: /weather Sao Paulo\n\n"
           "• 🦜 /tr ou /translate <de> <para> <text> - Traduzir texto de um idioma para outro. Exemplo: /translate en pt Hello world!\n\n"
+          "• 🏠 /cep ou /brcep <cep> - Envia informações sobre um CEP brasileiro. Exemplo: /cep 01001-000\n\n"
+          "• 🌤 /wt ou /weather <city> - Checar previsão do tempo em uma cidade. Exemplo: /weather Sao Paulo\n\n"
+          "• 💬 /lg ou /language <pt|en> - Mudar idioma. Exemplo: /lg pt\n\n"
           "• 📝 /re ou /reminder <HH:MM> <message> - Agendar uma mensagem para ser enviada numa hora específica, todos os dias.\n\n"
           "• 📅 /lsre or /lsreminders - Listar todos os lembretes agendados.\n\n"
           "• 🗑️ /rmre or /rmreminder <schedule_id> - Remove um lembrete agendado pelo ID. você pode pegar o ID com o comando /lsreminders\n\n"
@@ -82,10 +83,18 @@ MESSAGES = {
       # ====================== User Data ======================
       "userdata": "👤 Dados do Usuário",
       "user_data": "👤 Dados do Usuário\n___________________________________________\nNome: {user_name}\nID: {user_id}\nLanguage: {lang}-BR\n\nComandos solicitados:\n{commands}",
+
       
+      # ====================== CEP ======================
+      "cep_info": "🏠 CEP:\n\n{data}",
+      "cep_usage": "Uso: /cep <cep>\nExemplo: /cep 01001-000\n\n",
+      "cep_not_found": "(⁴⁰⁴) CEP: {cep} não foi encontrado. Tente novamente ou certifique-se de que está correto.",
+      "cep_error": "Formato de CEP inválido. Use o formato 12345-678 ou 12345678",
+        
       
       # ====================== Unknown command message ======================
       "unknown": "❓ Não entendi. Digite /help para ver os comandos",
+
   },
   "en": {
       # ====================== Help message ======================
@@ -95,9 +104,10 @@ MESSAGES = {
           "Here is the available commands for this bot:\n\n"
           "• ▶️ /st or /start - Start chatting with the bot\n\n"
           "• 🤖 /op or /options - Show quick options menu. Your best friend.\n\n"
-          "• 💬 /lg or /language <pt|en> - Change the language. Example: /lg pt\n\n"
-          "• 🌤 /wt or /weather <city> - Get current weather for a city. Example: /weather Sao Paulo\n\n"
           "• 🦜 /tr ou /translate <from> <to> <text> - Translate text from one language to another. Example: /translate en pt Hello world!\n\n"
+          "• 🏠 /cep ou /brcep <cep> - Send information about a Brazilian CEP. Example: /cep 01001-000\n\n"
+          "• 🌤 /wt or /weather <city> - Get current weather for a city. Example: /weather Sao Paulo\n\n"
+          "• 💬 /lg or /language <pt|en> - Change the language. Example: /lg pt\n\n"
           "• 📝 /re or /reminder <HH:MM> <message> - Schedule a message to be sent at a specific time, everyday\n\n"
           "• 📅 /lsre or /lsreminders - List all scheduled reminders\n\n"
           "• 🗑️ /rmre or /rmreminder <schedule_id> - Remove a scheduled reminder by ID. You can get the ID with the command /lsreminders\n\n"
@@ -169,6 +179,13 @@ MESSAGES = {
       # ====================== User Data ======================
       "userdata": "👤 User Data",
       "user_data": "👤 User Data\n___________________________________________\nName: {user_name}\nID: {user_id}\nLanguage: {lang}-US\n\nCommands requested:\n{commands}",
+
+      
+      # ====================== CEP ======================
+      "cep_info": "🏠 CEP:\n\n{data}",
+      "cep_usage": "Usage: /cep <cep>\nExample: /cep 01001-000\n\n",
+      "cep_not_found": "(⁴⁰⁴) CEP: {cep} not found. Try again or make sure it is correct.",
+      "cep_error": "Invalid CEP format. Use the format 12345-678 or 12345678",
 
       
       # ====================== Unknown command message ======================

@@ -18,6 +18,7 @@ def register_handlers(app):
         (["translate", "tr"], handlers.translate_cmd),
         (["curiosity", "cr"], handlers.curiosity_cmd),
         (["userdata", "ud"], handlers.display_user_data_cmd),
+        (["brcep", "cep"], handlers.br_cep_cmd)
     ]
     # Register all commands above
     for cmd_list, func in commands:

@@ -388,3 +388,39 @@ async def display_user_data_cmd(update: Update, context: ContextTypes.DEFAULT_TY
     await target.reply_text(bot_send_message(lang, "user_data").format(user_name=user_name, user_id=user_id, lang=lang, commands=commands))
     
     increment_bot_calls(user_id, "request_user_data")
+
+
+# ====================== Get info for a Brasilian CEP ======================
+async def br_cep_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    lang = get_lang(user_id)
+    target = await get_target_message(update, context)
+
+    if not check_cooldown(user_id, 5):
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+    
+    if not context.args:
+        await target.reply_text(bot_send_message(lang, "cep_usage"))
+        return
+        
+    cep = context.args[0]
+    if not re.match(r"^\d{5}-?\d{3}$", cep):
+        await target.reply_text(bot_send_message(lang, "cep_error"))
+        return
+            
+    url = f"https://brasilapi.com.br/api/cep/v1/{cep}"
+    try:
+        response = requests.get(url, timeout=5)
+
+        data = response.json()
+
+        # Format the data to be sent to the user
+        msg = "\n".join([f"{str(k.upper())}: {v}" for k, v in data.items()])
+
+        await target.reply_text(bot_send_message(lang, "cep_info").format(data=msg))
+        increment_bot_calls(user_id, "cep_search")
+    except Exception as e:
+        print(e)
+        await target.reply_text(bot_send_message(lang, "cep_not_found").format(cep=cep))
+        
