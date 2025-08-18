@@ -127,7 +127,6 @@ def translate_text(text, source="en", target="pt"):
     try:
         return GoogleTranslator(source=source, target=target).translate(text)
     except Exception as e:
-        print("Translation error:", e)
         return text
 
 

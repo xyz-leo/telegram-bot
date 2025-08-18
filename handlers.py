@@ -31,6 +31,7 @@ async def main_kbd_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         (bot_send_message(lang, "option_curiosity"), "curiosity"),
         (bot_send_message(lang, "option_userdata"), "userdata"),
         (bot_send_message(lang, "option_exchange"), "exchange"),
+        (bot_send_message(lang, "option_holidays"), "holidays"),
         (bot_send_message(lang, "option_help"), "help"),
     ]
     await send_kbd_menu(update, context, options, "options_menu")
@@ -94,6 +95,8 @@ async def button_handler(update, context):
         await display_user_data_cmd(update=update, context=context)
     elif data == "exchange":
         await exchange_rate(update=update, context=context)
+    elif data == "holidays":
+        await holidays_cmd(update=update, context=context)
     elif data == "help":
         await help_cmd(update=update, context=context)
 
@@ -357,7 +360,34 @@ async def translate_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Check if the user provided the necessary arguments
     if len(context.args) < 3:
-        return await target.reply_text(bot_send_message(lang, "translate_usage"))
+        languages = [
+            "afrikaans", "albanian", "amharic", "arabic", "armenian", "assamese",
+            "aymara", "azerbaijani", "bambara", "basque", "belarusian", "bengali",
+            "bhojpuri", "bosnian", "bulgarian", "catalan", "cebuano", "chichewa",
+            "chinese (simplified)", "chinese (traditional)", "corsican", "croatian",
+            "czech", "danish", "dhivehi", "dogri", "dutch", "english", "esperanto",
+            "estonian", "ewe", "filipino", "finnish", "french", "frisian", "galician",
+            "georgian", "german", "greek", "guarani", "gujarati", "haitian creole",
+            "hausa", "hawaiian", "hebrew", "hindi", "hmong", "hungarian", "icelandic",
+            "igbo", "ilocano", "indonesian", "irish", "italian", "japanese", "javanese",
+            "kannada", "kazakh", "khmer", "kinyarwanda", "konkani", "korean", "krio",
+            "kurdish (kurmanji)", "kurdish (sorani)", "kyrgyz", "lao", "latin",
+            "latvian", "lingala", "lithuanian", "luganda", "luxembourgish",
+            "macedonian", "maithili", "malagasy", "malay", "malayalam", "maltese",
+            "maori", "marathi", "meiteilon (manipuri)", "mizo", "mongolian", "myanmar",
+            "nepali", "norwegian", "odia (oriya)", "oromo", "pashto", "persian",
+            "polish", "portuguese", "punjabi", "quechua", "romanian", "russian",
+            "samoan", "sanskrit", "scots gaelic", "sepedi", "serbian", "sesotho",
+            "shona", "sindhi", "sinhala", "slovak", "slovenian", "somali", "spanish",
+            "sundanese", "swahili", "swedish", "tajik", "tamil", "tatar", "telugu",
+            "thai", "tigrinya", "tsonga", "turkish", "turkmen", "twi", "ukrainian",
+            "urdu", "uyghur", "uzbek", "vietnamese", "welsh", "xhosa", "yiddish",
+            "yoruba", "zulu"
+        ]
+
+        # Format the list of languages into a string
+        languages = ", ".join([f"{v}" for v in languages])
+        return await target.reply_text(bot_send_message(lang, "translate_usage").format(languages=languages))
 
     source_lang = context.args[0].lower()
     target_lang = context.args[1].lower()
@@ -394,7 +424,8 @@ async def display_user_data_cmd(update: Update, context: ContextTypes.DEFAULT_TY
     increment_bot_calls(user_id, "request_user_data")
 
 
-# ====================== Get info for a Brasilian CEP ======================
+# ====================== From API: https://brasilapi.com.br/ ======================
+#  --- Get info for a Brasilian CEP ---
 async def br_cep_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     lang = get_lang(user_id)
@@ -433,7 +464,7 @@ async def br_cep_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(e)
 
 
-# ====================== Exchange rate ======================
+# --- Exchange rate ---
 async def exchange_rate(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     lang = get_lang(user_id)
@@ -480,3 +511,72 @@ async def exchange_rate(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         print(e)
         await target.reply_text(bot_send_message(lang, "coin_usage").format(coin=coin))
+
+
+# --- CPNJ Lookup ---
+async def cnpj_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    lang = get_lang(user_id)
+
+    if not check_cooldown(user_id, 5):
+        await update.message.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+
+    if not context.args:
+        await update.message.reply_text(bot_send_message(lang, "cnpj_usage"))
+        return
+
+    # Validate CNPJ format
+    cnpj = context.args[0]
+    if not re.fullmatch(r"\d{14}|(\d{2}\.\d{3}\.\d{3}-\d{4}-\d{2})", cnpj):
+        await update.message.reply_text(bot_send_message(lang, "cnpj_invalid"))
+        return
+
+    url = f"https://brasilapi.com.br/api/cnpj/v1/{cnpj}"
+    try:
+        response = requests.get(url, timeout=5)
+        data = response.json()
+
+        # Check if the CNPJ was not found
+        if "bad_request" in data.values():
+            await update.message.reply_text(bot_send_message(lang, "cnpj_error").format(cnpj=cnpj))
+            return
+            
+        msg = "\n".join([f"{str(k).upper()}: {v}\n" for k, v in data.items()])
+        
+        await update.message.reply_text(bot_send_message(lang, "cnpj_info").format(data=msg, cnpj=cnpj))
+        
+        increment_bot_calls(user_id, "cnpj_search")
+    except Exception as e:
+        print(e)
+
+
+async def holidays_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    lang = get_lang(user_id)
+    target = await get_target_message(update, context)
+
+    if not check_cooldown(user_id, 5):
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+
+    if context.args:
+        year = context.args[0]
+    else:
+        year = datetime.now().year
+        
+    url = f"https://brasilapi.com.br/api/feriados/v1/{year}"
+
+    try:
+        response = requests.get(url, timeout=5)
+        data = response.json()
+
+        # Format the data to be sent to the user
+        msg = ""
+        for holiday in data:
+            msg += f"Nome: {holiday['name']}\nData: {holiday['date']}\nTipo: {holiday['type']}\n__________________________________\n"
+        
+        await target.reply_text(msg)
+        
+    except Exception as e:
+        print(e)

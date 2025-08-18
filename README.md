@@ -47,7 +47,7 @@ From the main menu, users can access:
 
 🌤 Weather – Opens a submenu to choose a state or city and view current weather information.
 
-📰 News – (Removed in current version) Previously opened a submenu with categories such as General, Technology, Sports and many others.
+📰 News – (Removed in current versions) Previously opened a submenu with categories such as General, Technology, Sports and many others.
 
 📅 List Reminders – Displays a list of saved reminders.
 
@@ -58,6 +58,8 @@ From the main menu, users can access:
 👤 User data - Request your data usage.
 
 💰 Exchange Rate - Search for the exchange rate of the Real (BRL) against another currency, at the last closing price or on a specific date. Example: /cotacao USD or /cotacao EUR YYYY-MM-DD.
+
+🎉 Holidays - Lists the national holidays for a given year.
 
 ❓ Help – Shows usage instructions.
 
@@ -100,22 +102,45 @@ Users language preferences are saved persistently in a JSON file, so the bot rem
 - Returns the latest quotation with details such as buy price, sell price, and quotation type.
 - Handles invalid currency codes or unavailable dates gracefully.
 
-### 9. Cooldown system
+### 9. CNPJ Lookup
+
+This feature allows you to query information about a Brazilian company using its CNPJ (Cadastro Nacional da Pessoa Jurídica).
+Both formatted (52.242.403/0001-40) and unformatted (52242403000140) CNPJs are supported.
+The response includes official company data such as name, registration status, and legal information, retrieved from the BrasilAPI.
+
+### 10. Holidays list
+
+You can retrieve the list of official Brazilian holidays for a given year.
+
+Each holiday entry provides:
+- Name of the holiday
+- Date in YYYY-MM-DD format
+- Type (e.g., national)
+
+This is useful for systems that require awareness of non-working days, scheduling, or calendar integrations.
+
+---
+
+## Utility functions
+
+### Cooldown system
 
 - Prevents spam or repeated requests from the same user.
 - Applies to both inline button clicks and slash commands (/).
 - Users must wait a configurable period (default 2 seconds) between actions.
 - Alerts notify users if they attempt to interact before the cooldown expires.
 
-### 10. Bot Call Counter
+### Bot Call Counter
 
 - The bot keeps track of how many times each type of action is executed per user.
 - This is useful for possible metrics, usage limits, or statistics.
 - Storage structure: The bot_calls field inside the user's preferences dictionary is now always a dictionary,
 where the key is the call type (call_type) and the value is the number of executions.
 
-### 11. See User Data
+### See User Data (calls made to the bot)
 - The user can use the /userdata command to view all data stored on the server, which is their current language and the number of times each command has been used.
+
+---
 
 ## Commands
 
@@ -131,7 +156,9 @@ where the key is the call type (call_type) and the value is the number of execut
 - `/curiosity` - Shows a random fun fact.
 - `/userdata` - View all your data stored in the server.
 - `/cep` - Retrieve detailed information for any Brazilian postal code (CEP).
+- `/cnpj <data>` - Pulls avaiable data from a given CNPJ.
 - `/cotacao` - Get the exchange rate between the Brazilian Real (BRL) and any other currency.
+- `/holidays` - Lists the national holidays for a given year.
 
 ---
 
@@ -165,6 +192,7 @@ where the key is the call type (call_type) and the value is the number of execut
 - Commands and handlers are separated into modules (`handlers.py`, `utils.py`, `scheduler.py`).
 - Handlers for scheduled jobs are dynamically dispatched using a dictionary to keep the scheduled message logic clean and extensible.
 - Utility functions manage API interactions and JSON file persistence.
+- All messages to the user are configured in the module messages.py to keep the backend logic and user messages separated and easy to modify/extend.
 
 ---
 
@@ -176,6 +204,5 @@ where the key is the call type (call_type) and the value is the number of execut
 - There is no user authentication beyond Telegram chat IDs.
 - The JSON persistence is simple and may not scale well for a very large number of users or reminders.
 - Error handling is minimal; improvements can be made to handle API failures or invalid user inputs more gracefully.
-- Handlers are currently limited to weather and news but can be extended easily.
 
 ---

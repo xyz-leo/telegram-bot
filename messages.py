@@ -9,6 +9,7 @@ MESSAGES = {
           "• 🤖 /op ou /options - Mostrar menu de opções rápidas. Seu melhor amigo.\n\n"
           "• 🦜 /tr ou /translate <de> <para> <text> - Traduzir texto de um idioma para outro. Exemplo: /translate en pt Hello world!\n\n"
           "• 🏠 /cep ou /brcep <cep> - Envia informações sobre um CEP brasileiro. Exemplo: /cep 01001-000\n\n"
+          "• 🏢 /cnpj <cnpj> - Envia informações sobre um CNPJ. Exemplo: /cnpj 12345678901234 ou /cpnj 12.345.678-1234-56\n"
           "• 🌤 /wt ou /weather <city> - Checar previsão do tempo em uma cidade. Exemplo: /weather Sao Paulo\n\n"
           "• 💰 /cotacao ou /ct <moeda> <data> - Busca pelo câmbio do Real com outra moeda, no último fechamento ou em uma data específica. Exemplo: /cotacao USD ou /cotacao EUR YYYY-MM-DD.\n\n"
           "• 💬 /lg ou /language <pt|en> - Mudar idioma. Exemplo: /lg pt\n\n"
@@ -16,6 +17,7 @@ MESSAGES = {
           "• 📅 /lsre or /lsreminders - Listar todos os lembretes agendados.\n\n"
           "• 🗑️ /rmre or /rmreminder <schedule_id> - Remove um lembrete agendado pelo ID. você pode pegar o ID com o comando /lsreminders\n\n"
           "• 💡 /cr ou /curiosity - Envia uma curiosidade aleatória.\n\n"
+          "• 🎉 /hd ou /holidays - Envia os feriados do ano atual ou do ano especificado. Exemplo: /holidays ou /holidays 2026\n\n",
           "• ❓ /hp or /help - Mostra essa mensagem de ajuda.\n"
           #... add more commands as needed
       ),
@@ -74,7 +76,7 @@ MESSAGES = {
       
       # ====================== Translate ======================
       "translated_message": "🦜 Traduzido ({source} → {target}):\n\n{translated}",
-      "translate_usage": "Uso: /translate <de> <para> <text>\nExemplo: /translate en pt Hello world!",
+      "translate_usage": "Uso: /translate <de> <para> <text>\nExemplo: /translate en pt Hello world!\n\nLínguas suportadas:\n{languages}",
 
       
       # ====================== Cooldown message ======================
@@ -97,6 +99,17 @@ MESSAGES = {
       "option_exchange": "💰 Câmbio BR → USD (última cotação)",
       "coin_info": "💰 Câmbio do real com a moeda {coin} na data {date}:\n\n{msg}",
       "coin_usage": "Falha ao obter resultados.\n\nUso: /cotacao <moeda> <date>\nExemplo: /cotacao USD ou /cotacao EUR 2000-10-05\n\nBusca pelo câmbio do Real com outra moeda, no fechamento de ontem ou em uma data específica.\nExemplo de moedas disponíveis para pesquisa: AUD, CAD, CHF, DKK, EUR, GBP, JPY, SEK, USD.",
+
+
+      # ====================== CNPJ ======================
+      "cnpj_info": "🏢 Dados do CNPJ {cnpj}:\n\n{data}",
+      "cnpj_usage": "Uso: /cnpj <cnpj>\nExemplo: /cnpj 12345678901234 ou /cpnj 12.345.678/1234-56\n\n",
+      "cnpj_error": "(⁴⁰⁴) CNPJ: {cnpj} não foi encontrado. Tente novamente ou certifique-se de que está correto.",
+      "cnpj_invalid": "Formato de CNPJ inválido. Use o formato 12345678901234 ou 12.345.678-1234-56",
+
+
+      # ====================== Holidays ======================
+      "option_holidays": "🎉 Feriados",
       
       
       # ====================== Unknown command message ======================
@@ -113,18 +126,18 @@ MESSAGES = {
           "• 🤖 /op or /options - Show quick options menu. Your best friend.\n\n"
           "• 🦜 /tr ou /translate <from> <to> <text> - Translate text from one language to another. Example: /translate en pt Hello world!\n\n"
           "• 🏠 /cep ou /brcep <cep> - Send information about a Brazilian CEP. Example: /cep 01001-000\n\n"
+          "• 🏢 /cnpj <cnpj> - Send information about a CNPJ. Example: /cnpj 12345678901234 ou /cpnj 12.345.678-1234-56\n"
           "• 💰 /cotacao ou /ct <coin> <date> - Search for the exchange rate of the Real against another currency, at the last closing price or on a specific date. Example: /cotacao USD or /cotacao EUR YYYY-MM-DD.\n",
           "• 🌤 /wt or /weather <city> - Get current weather for a city. Example: /weather Sao Paulo\n\n"
           "• 💬 /lg or /language <pt|en> - Change the language. Example: /lg pt\n\n"
           "• 📝 /re or /reminder <HH:MM> <message> - Schedule a message to be sent at a specific time, everyday\n\n"
           "• 📅 /lsre or /lsreminders - List all scheduled reminders\n\n"
           "• 🗑️ /rmre or /rmreminder <schedule_id> - Remove a scheduled reminder by ID. You can get the ID with the command /lsreminders\n\n"
-
           "• 💡 /cr ou /curiosity - Send a random curiosity.\n\n"
+          "• 🎉 /hd ou /holidays - Send the holidays of the current year or the specified year. Example: /holidays or /holidays 2026\n\n",
           "• ❓ /hp or /help - Show this help message\n"
           #... add more commands as needed
       ),
-
       
       # ====================== Welcome message ======================
       "welcome": "👋 Hello, welcome, {user}!\n\nI’m your personal reminder bot, projected by xyz-leo.\nI can send you scheduled messages to help you remember tasks, events, weather or anything important.\n\nPlease, type /help to check information and avaiable commands.",
@@ -177,7 +190,7 @@ MESSAGES = {
       
       # ====================== Translate ======================
       "translated_message": "🦜 Translated ({source} → {target}):\n\n{translated}",
-      "translate_usage": "Usage: /translate <from> <to> <text>\nExample: /translate pt en Olá mundo!",
+      "translate_usage": "Usage: /translate <from> <to> <text>\nExample: /translate pt en Olá mundo!\n\nSupported languages:\n{languages}",
 
       
       # ====================== Cooldown message ======================
@@ -201,6 +214,17 @@ MESSAGES = {
       "coin_info": "💰 Exchange rate of the Real with the coin {coin} at date {date}:\n\n{msg}",
       "coin_usage": "Failed to get results.\n\nUsage: /cotacao <coin> <date>\nExample: /cotacao USD or /cotacao EUR YYYY-MM-DD\n\nSearch for the exchange rate of the Real against another currency, at the last closing price yesterday or on a specific date.\nExample of avaiable coins to search: AUD, CAD, CHF, DKK, EUR, GBP, JPY, SEK, USD.",
       
+
+      # ====================== CNPJ ======================
+      "cnpj_info": "🏢 Data of the CNPJ {cnpj}:\n\n{data}",
+      "cnpj_usage": "Usage: /cnpj <cnpj>\nExample: /cnpj 12345678901234 or /cpnj 12.345.678-1234-56\n\n",
+      "cnpj_error": "(⁴⁰⁴) CNPJ: {cnpj} not found. Try again or make sure it is correct.",
+      "cnpj_invalid": "Invalid CNPJ format. Use the format 12345678901234 or /cpnj 12.345.678-1234-56",
+
+
+      # ====================== Holidays ======================
+      "option_holidays": "🎉 Holidays",
+
       
       # ====================== Unknown command message ======================
       "unknown": "❓ I didn’t understand. Type /help to see commands.",
