@@ -10,6 +10,7 @@ MESSAGES = {
           "• 🦜 /tr ou /translate <de> <para> <text> - Traduzir texto de um idioma para outro. Exemplo: /translate en pt Hello world!\n\n"
           "• 🏠 /cep ou /brcep <cep> - Envia informações sobre um CEP brasileiro. Exemplo: /cep 01001-000\n\n"
           "• 🌤 /wt ou /weather <city> - Checar previsão do tempo em uma cidade. Exemplo: /weather Sao Paulo\n\n"
+          "• 💰 /cotacao ou /ct <moeda> <data> - Busca pelo câmbio do Real com outra moeda, no último fechamento ou em uma data específica. Exemplo: /cotacao USD ou /cotacao EUR YYYY-MM-DD.\n\n"
           "• 💬 /lg ou /language <pt|en> - Mudar idioma. Exemplo: /lg pt\n\n"
           "• 📝 /re ou /reminder <HH:MM> <message> - Agendar uma mensagem para ser enviada numa hora específica, todos os dias.\n\n"
           "• 📅 /lsre or /lsreminders - Listar todos os lembretes agendados.\n\n"
@@ -65,7 +66,7 @@ MESSAGES = {
 
       
       # ====================== Curiosity ======================
-      "curiosity": "💡 Curiosidade",
+      "option_curiosity": "💡 Curiosidade",
       "curiosity_message": "💡 Curiosidade:\n\n{fact}",
       "curiosity_disclaimer": "⚠️ A curiosidade pode não ser verdadeira. Este comando é apenas para diversão.",
       "curiosity_error": "❗ Não foi possível obter uma curiosidade agora.",
@@ -81,7 +82,7 @@ MESSAGES = {
 
       
       # ====================== User Data ======================
-      "userdata": "👤 Dados do Usuário",
+      "option_userdata": "👤 Dados do Usuário",
       "user_data": "👤 Dados do Usuário\n___________________________________________\nNome: {user_name}\nID: {user_id}\nLanguage: {lang}-BR\n\nComandos solicitados:\n{commands}",
 
       
@@ -91,6 +92,12 @@ MESSAGES = {
       "cep_not_found": "(⁴⁰⁴) CEP: {cep} não foi encontrado. Tente novamente ou certifique-se de que está correto.",
       "cep_error": "Formato de CEP inválido. Use o formato 12345-678 ou 12345678",
         
+
+      # ====================== Exchange Rate ======================
+      "option_exchange": "💰 Câmbio BR → USD (última cotação)",
+      "coin_info": "💰 Câmbio do real com a moeda {coin} na data {date}:\n\n{msg}",
+      "coin_usage": "Falha ao obter resultados.\n\nUso: /cotacao <moeda> <date>\nExemplo: /cotacao USD ou /cotacao EUR 2000-10-05\n\nBusca pelo câmbio do Real com outra moeda, no fechamento de ontem ou em uma data específica.\nExemplo de moedas disponíveis para pesquisa: AUD, CAD, CHF, DKK, EUR, GBP, JPY, SEK, USD.",
+      
       
       # ====================== Unknown command message ======================
       "unknown": "❓ Não entendi. Digite /help para ver os comandos",
@@ -106,6 +113,7 @@ MESSAGES = {
           "• 🤖 /op or /options - Show quick options menu. Your best friend.\n\n"
           "• 🦜 /tr ou /translate <from> <to> <text> - Translate text from one language to another. Example: /translate en pt Hello world!\n\n"
           "• 🏠 /cep ou /brcep <cep> - Send information about a Brazilian CEP. Example: /cep 01001-000\n\n"
+          "• 💰 /cotacao ou /ct <coin> <date> - Search for the exchange rate of the Real against another currency, at the last closing price or on a specific date. Example: /cotacao USD or /cotacao EUR YYYY-MM-DD.\n",
           "• 🌤 /wt or /weather <city> - Get current weather for a city. Example: /weather Sao Paulo\n\n"
           "• 💬 /lg or /language <pt|en> - Change the language. Example: /lg pt\n\n"
           "• 📝 /re or /reminder <HH:MM> <message> - Schedule a message to be sent at a specific time, everyday\n\n"
@@ -161,7 +169,7 @@ MESSAGES = {
 
       
       # ====================== Curiosity ======================
-      "curiosity": "💡 Curiosity",
+      "option_curiosity": "💡 Curiosity",
       "curiosity_message": "💡 Curiosity:\n\n{fact}",
       "curiosity_disclaimer": "⚠️ The curiosity may not be true. This command is just for fun.",
       "curiosity_error": "❗ Could not obtain a curiosity now.",
@@ -177,7 +185,7 @@ MESSAGES = {
       
 
       # ====================== User Data ======================
-      "userdata": "👤 User Data",
+      "option_userdata": "👤 User Data",
       "user_data": "👤 User Data\n___________________________________________\nName: {user_name}\nID: {user_id}\nLanguage: {lang}-US\n\nCommands requested:\n{commands}",
 
       
@@ -187,6 +195,12 @@ MESSAGES = {
       "cep_not_found": "(⁴⁰⁴) CEP: {cep} not found. Try again or make sure it is correct.",
       "cep_error": "Invalid CEP format. Use the format 12345-678 or 12345678",
 
+
+      # ====================== Exchange Rate ======================
+      "option_exchange": "💰 Exchange rate BR → USD (last closing price)",
+      "coin_info": "💰 Exchange rate of the Real with the coin {coin} at date {date}:\n\n{msg}",
+      "coin_usage": "Failed to get results.\n\nUsage: /cotacao <coin> <date>\nExample: /cotacao USD or /cotacao EUR YYYY-MM-DD\n\nSearch for the exchange rate of the Real against another currency, at the last closing price yesterday or on a specific date.\nExample of avaiable coins to search: AUD, CAD, CHF, DKK, EUR, GBP, JPY, SEK, USD.",
+      
       
       # ====================== Unknown command message ======================
       "unknown": "❓ I didn’t understand. Type /help to see commands.",

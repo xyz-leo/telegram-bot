@@ -57,6 +57,8 @@ From the main menu, users can access:
 
 👤 User data - Request your data usage.
 
+💰 Exchange Rate - Search for the exchange rate of the Real (BRL) against another currency, at the last closing price or on a specific date. Example: /cotacao USD or /cotacao EUR YYYY-MM-DD.
+
 ❓ Help – Shows usage instructions.
 
 Each submenu returns specific callback data to the button_handler function, which processes the user's selection and responds accordingly.
@@ -83,24 +85,39 @@ Users language preferences are saved persistently in a JSON file, so the bot rem
 - Facts are retrieved from the API uselessfacts.jsph.pl, the bot translate into Portuguese if needed.
 - The feature works with inline buttons and slash command.
 
-### 7. Cooldown system
+### 7. Brazilian CEP Lookup
+
+- Retrieve detailed information for any Brazilian postal code (CEP).
+- Validates the CEP format (12345-678 or 12345678).
+- Handles errors when a CEP is not found.
+- Returns structured information including state, city, neighborhood, and street.
+
+### 8. Currency Exchange Rate
+
+- Get the exchange rate between the Brazilian Real (BRL) and any other currency.
+- Default currency is USD if none is specified.
+- Optionally, specify a date in YYYY-MM-DD format to get historical rates.
+- Returns the latest quotation with details such as buy price, sell price, and quotation type.
+- Handles invalid currency codes or unavailable dates gracefully.
+
+### 9. Cooldown system
 
 - Prevents spam or repeated requests from the same user.
 - Applies to both inline button clicks and slash commands (/).
 - Users must wait a configurable period (default 2 seconds) between actions.
 - Alerts notify users if they attempt to interact before the cooldown expires.
 
-### 8. Bot Call Counter
+### 10. Bot Call Counter
 
 - The bot keeps track of how many times each type of action is executed per user.
 - This is useful for possible metrics, usage limits, or statistics.
 - Storage structure: The bot_calls field inside the user's preferences dictionary is now always a dictionary,
 where the key is the call type (call_type) and the value is the number of executions.
 
-### 9. See User Data
+### 11. See User Data
 - The user can use the /userdata command to view all data stored on the server, which is their current language and the number of times each command has been used.
 
-### 10. Commands
+## Commands
 
 - `/start` - Welcomes the user and displays available commands.
 - `/help` - Shows help information listing available commands.
@@ -113,6 +130,8 @@ where the key is the call type (call_type) and the value is the number of execut
 - `/rmreminder <schedule_id>` - Removes a scheduled reminder by its ID.
 - `/curiosity` - Shows a random fun fact.
 - `/userdata` - View all your data stored in the server.
+- `/cep` - Retrieve detailed information for any Brazilian postal code (CEP).
+- `/cotacao` - Get the exchange rate between the Brazilian Real (BRL) and any other currency.
 
 ---
 

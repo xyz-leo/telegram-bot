@@ -7,6 +7,7 @@ import uuid # for generating unique IDs
 from messages import bot_send_message # for sending messages in user language
 from user_pref import get_lang, increment_bot_calls, set_lang, get_user_pref # for getting and setting user language
 import requests
+from datetime import datetime, timedelta # for getting the current date and time
 
 
 # ====================== Start command ======================
@@ -27,8 +28,9 @@ async def main_kbd_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         (bot_send_message(lang, "option_weather"), "weather"),
         (bot_send_message(lang, "option_list_reminders"), "lsreminders"),
         (bot_send_message(lang, "option_switch_language"), "language"),
-        (bot_send_message(lang, "curiosity"), "curiosity"),
-        (bot_send_message(lang, "userdata"), "userdata"),
+        (bot_send_message(lang, "option_curiosity"), "curiosity"),
+        (bot_send_message(lang, "option_userdata"), "userdata"),
+        (bot_send_message(lang, "option_exchange"), "exchange"),
         (bot_send_message(lang, "option_help"), "help"),
     ]
     await send_kbd_menu(update, context, options, "options_menu")
@@ -90,6 +92,8 @@ async def button_handler(update, context):
         await curiosity_cmd(update=update, context=context)
     elif data == "userdata":
         await display_user_data_cmd(update=update, context=context)
+    elif data == "exchange":
+        await exchange_rate(update=update, context=context)
     elif data == "help":
         await help_cmd(update=update, context=context)
 
@@ -394,19 +398,18 @@ async def display_user_data_cmd(update: Update, context: ContextTypes.DEFAULT_TY
 async def br_cep_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     lang = get_lang(user_id)
-    target = await get_target_message(update, context)
 
     if not check_cooldown(user_id, 5):
-        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        await update.message.reply_text(bot_send_message(lang, "cooldown_message"))
         return
     
     if not context.args:
-        await target.reply_text(bot_send_message(lang, "cep_usage"))
+        await update.message.reply_text(bot_send_message(lang, "cep_usage"))
         return
         
     cep = context.args[0]
     if not re.match(r"^\d{5}-?\d{3}$", cep):
-        await target.reply_text(bot_send_message(lang, "cep_error"))
+        await update.message.reply_text(bot_send_message(lang, "cep_error"))
         return
             
     url = f"https://brasilapi.com.br/api/cep/v1/{cep}"
@@ -415,12 +418,65 @@ async def br_cep_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         data = response.json()
 
+        # Check if the CEP was found
+        if "service_error" in data.values():
+            await update.message.reply_text(bot_send_message(lang, "cep_not_found").format(cep=cep))
+            return
+            
         # Format the data to be sent to the user
         msg = "\n".join([f"{str(k.upper())}: {v}" for k, v in data.items()])
 
-        await target.reply_text(bot_send_message(lang, "cep_info").format(data=msg))
+        await update.message.reply_text(bot_send_message(lang, "cep_info").format(data=msg))
+        
         increment_bot_calls(user_id, "cep_search")
     except Exception as e:
         print(e)
-        await target.reply_text(bot_send_message(lang, "cep_not_found").format(cep=cep))
-        
+
+
+# ====================== Exchange rate ======================
+async def exchange_rate(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    lang = get_lang(user_id)
+    target = await get_target_message(update, context)
+
+    # Checks cooldown
+    if not check_cooldown(user_id, 5):
+        await target.reply_text(bot_send_message(lang, "cooldown_message"))
+        return
+
+    # Defaults
+    coin = "USD"
+    date_str = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+
+    # Verify arguments provided by the user
+    if context.args:
+        # Validate coin (3 letters)
+        if not re.fullmatch(r"[A-Za-z]{3}", context.args[0]):
+            return await target.reply_text(bot_send_message(lang, "coin_usage"))
+        coin = context.args[0].upper()
+
+        # Validate optional date
+        if len(context.args) > 1 and re.match(r"^\d{4}-\d{2}-\d{2}$", context.args[1]):
+            date_str = context.args[1]
+        elif len(context.args) > 1:
+            return await target.reply_text(bot_send_message(lang, "coin_usage"))
+
+    url = f"https://brasilapi.com.br/api/cambio/v1/cotacao/{coin}/{date_str}"
+
+    try:
+        res = requests.get(url)
+        data = res.json()
+
+        # Get closing price
+        fechamento_ptax = data["cotacoes"][-1]
+
+        # Format message to the user
+        msg = "\n".join([f"{str(k).upper()}: {v}" for k, v in fechamento_ptax.items()])
+
+        await target.reply_text(bot_send_message(lang, "coin_info").format(coin=coin, date=date_str, msg=msg))
+
+        increment_bot_calls(user_id, "coin_search")
+
+    except Exception as e:
+        print(e)
+        await target.reply_text(bot_send_message(lang, "coin_usage").format(coin=coin))
